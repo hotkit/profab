@@ -1,3 +1,7 @@
+import logging
+
+
+_logger = logging.getLogger('profab')
 
 
 class _Configuration(object):

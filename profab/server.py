@@ -1,5 +1,4 @@
-import logging
-from profab import _Configuration
+from profab import _Configuration, _logger
 
 
 class Server(object):
@@ -13,7 +12,7 @@ class Server(object):
         and connect the requested services.
         """
         config = _Configuration(client)
-        logging.info("New server for %s on %s with roles %s",
+        _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
 
 
