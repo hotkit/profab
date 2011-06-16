@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+nosetests --cover-erase --with-coverage --cover-tests \
+    --cover-package=profab
+
