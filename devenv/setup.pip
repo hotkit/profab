@@ -1,3 +1,4 @@
+simplejson
 fabric
 git+git://github.com/boto/boto.git@2.0rc1
 nose
