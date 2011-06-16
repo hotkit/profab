@@ -1,4 +1,6 @@
+from simplejson import loads
 import logging
+import os
 
 
 _logger = logging.getLogger('profab')
@@ -16,11 +18,17 @@ class _Configuration(object):
         self.host = 'ec2'
         self.keys = _Keys(api = 'test-api-key',
             secret = 'test-api-secret')
+        # Load overrides from a file and merge them with this object
         overrides = self.load_configuration()
         _merge_attrs(self, overrides)
 
     def load_configuration(self):
-        return {}
+        pathname = os.path.expanduser('~/.profab/%s.json' % self.client)
+        try:
+            content = file(pathname).read()
+        except IOError:
+            content = "{}"
+        return loads(content)
 
 
 class _Keys(object):
@@ -35,6 +43,9 @@ class _Keys(object):
 
 
 def _merge_attrs(host, attrs):
+    """Sets attributes on an object based on values found in a dict in
+    a nested manner.
+    """
     for k, v in attrs.items():
         if hasattr(v, 'items'):
             if not hasattr(host, k):
