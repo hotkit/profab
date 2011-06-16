@@ -1,3 +1,4 @@
+import logging
 from profab import _Configuration
 
 
@@ -9,9 +10,11 @@ class Server(object):
     @classmethod
     def start(kls, client, *roles, **conections):
         """Start a server for the specified client with the given roles
-        and connected the provided services.
+        and connect the requested services.
         """
         config = _Configuration(client)
+        logging.info("New server for %s on %s with roles %s",
+            config.client, config.host, roles)
 
 
     @classmethod
