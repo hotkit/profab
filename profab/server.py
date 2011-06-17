@@ -1,3 +1,6 @@
+import time
+from boto.ec2.connection import EC2Connection
+
 from profab import _Configuration, _logger
 
 
@@ -5,6 +8,15 @@ class Server(object):
     """Represents a server. Do not construct these instances directly,
     use one of the methods `start` or `connect`.
     """
+
+    def __init__(self, config, cnx, instance):
+        """The constructor is called by either `start` or `connect`.
+        DO NOT CALL DIRECTLY.
+        """
+        self.config = config
+        self.cnx = cnx
+        self.instance = instance
+
 
     @classmethod
     def start(kls, client, *roles, **conections):
@@ -14,6 +26,18 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
+        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        image = cnx.get_all_images('ami-245fac4d')[0]
+        reservation = image.run(instance_type='t1.micro')
+        _logger.debug("Have reservation %s for new server with instances %s",
+            reservation, reservation.instances)
+        server = Server(config, cnx, reservation.instances[0])
+        while server.instance.state == 'pending':
+            _logger.debug("Waiting 10s for instance to start...")
+            time.sleep(10)
+            server.instance.update()
+        _logger.info("Instance state now %s with name %s",
+            server.instance.state, server.instance.dns_name)
 
 
     @classmethod
