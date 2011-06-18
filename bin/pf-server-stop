@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import fabric.network
 import logging
 import sys
 
@@ -15,5 +16,8 @@ def main(client, hostname):
 
 
 if __name__=="__main__":
-    main(*sys.argv[1:])
+    try:
+        main(*sys.argv[1:])
+    finally:
+        fabric.network.disconnect_all()
 
