@@ -56,3 +56,12 @@ class Server(object):
                 _logger.info("Found %s", instance)
                 return Server(config, cnx, instance)
         return None
+
+
+    def terminate(self):
+        self.instance.stop()
+        while self.instance.state != 'stopped':
+            _logger.info("Wating 10s for instance to stop...")
+            time.sleep(10)
+            self.instance.update()
+        _logger.info("Instance state now %s", self.instance.state)
