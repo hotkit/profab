@@ -41,8 +41,18 @@ class Server(object):
 
 
     @classmethod
-    def connect(kls, hostname):
+    def connect(kls, client, hostname):
         """Connect to a given server by the provided hostname.
-        """
-        pass
 
+        If a matching server cannot be found then return None.
+        """
+        config = _Configuration(client)
+        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        reservations = cnx.get_all_instances()
+        _logger.debug("Found  %s", reservations)
+        for reservation in reservations:
+            instance = reservation.instances[0]
+            if instance.dns_name == hostname:
+                _logger.info("Found %s", instance)
+                return Server(config, cnx, instance)
+        return None
