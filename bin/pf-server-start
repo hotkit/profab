@@ -6,7 +6,7 @@ from profab.server import Server
 
 
 def main(client, *args):
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     Server.start(client, *args)
 
 
