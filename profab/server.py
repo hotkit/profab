@@ -1,5 +1,6 @@
 import time
 
+from fabric.api import settings, sudo, reboot
 from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
@@ -41,8 +42,10 @@ class Server(object):
             _logger.info("Waiting 10s for instance to start...")
             time.sleep(10)
             server.instance.update()
-        _logger.info("Instance state now %s with name %s",
-            server.instance.state, server.instance.dns_name)
+        _logger.info("Instance state now %s with name %s."
+            " Waiting 30s for machine to boot.", server.instance.state,
+            server.instance.dns_name)
+        time.sleep(30)
         server.dist_upgrade()
 
 
@@ -67,8 +70,10 @@ class Server(object):
     def dist_upgrade(self):
         _logger.info("Starting dist-upgrade sequence for %s", self.instance)
         keyfile = get_private_key_filename(self.config, self.cnx)
-        #with settings(host_string=self.instance.dns_name):
-            #run('ls')
+        with settings(host_string=self.instance.dns_name, user='ubuntu',
+                key_filename=keyfile):
+            sudo('apt-get dist-upgrade')
+            reboot(30)
 
 
     def terminate(self):
