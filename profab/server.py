@@ -77,8 +77,8 @@ class Server(object):
 
 
     def terminate(self):
-        self.instance.stop()
-        while self.instance.state != 'stopped':
+        self.instance.terminate()
+        while self.instance.state != 'terminated':
             _logger.info("Wating 10s for instance to stop...")
             time.sleep(10)
             self.instance.update()
