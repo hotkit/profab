@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+import fabric.network
+import logging
+import sys
+
+from profab.server import Server
+
+
+def main(client, hostname):
+    logging.basicConfig(level=logging.INFO)
+    server = Server.connect(client, hostname)
+    if server:
+        server.terminate()
+    else:
+        logging.error("Could not find a server instance")
+
+
+if __name__=="__main__":
+    try:
+        main(*sys.argv[1:])
+    finally:
+        fabric.network.disconnect_all()
+
