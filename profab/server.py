@@ -1,10 +1,20 @@
 import time
 
 from fabric.api import settings, sudo, reboot
+from fabric.state import connections
 from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
+
+
+def _on_this_server(fn):
+    def wrapper(server, *args, **kwargs):
+        keyfile = get_private_key_filename(server.config, server.cnx)
+        with settings(host_string=server.instance.dns_name, user='ubuntu',
+                key_filename=keyfile):
+            fn(server, *args, **kwargs)
+    return wrapper
 
 
 class Server(object):
@@ -67,13 +77,31 @@ class Server(object):
         return None
 
 
+    @_on_this_server
+    def reboot(self):
+        reboot(30)
+        del connections[self.instance.dns_name]
+
+
+    @_on_this_server
+    def install_packages(self, *packages):
+        """Install the specified packages on the machine.
+        """
+        package_names =  ' '.join(packages)
+        _logger.info("Making sure the following packages are installed: %s",
+            package_names)
+        sudo('apt-get install %s' % package_names)
+
+
+    @_on_this_server
     def dist_upgrade(self):
+        """Perform a dist-upgrade and make sure the base packages are installed.
+        """
         _logger.info("Starting dist-upgrade sequence for %s", self.instance)
-        keyfile = get_private_key_filename(self.config, self.cnx)
-        with settings(host_string=self.instance.dns_name, user='ubuntu',
-                key_filename=keyfile):
-            sudo('apt-get dist-upgrade')
-            reboot(30)
+        sudo('apt-get update')
+        sudo('apt-get dist-upgrade -y')
+        self.reboot()
+        self.install_packages('byobu')
 
 
     def terminate(self):
@@ -83,3 +111,4 @@ class Server(object):
             time.sleep(10)
             self.instance.update()
         _logger.info("Instance state now %s", self.instance.state)
+
