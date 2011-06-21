@@ -8,7 +8,8 @@ from profab.server import Server
 
 def main(client, hostname):
     logging.basicConfig(level=logging.INFO)
-    Server.connect(client, hostname)
+    server = Server.connect(client, hostname)
+    server.dist_upgrade()
 
 
 if __name__=="__main__":
