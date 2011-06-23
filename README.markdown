@@ -4,9 +4,9 @@ _This project uses git flow. Don't forget to do `git flow init`_ (use defaults f
 
 # Command line scripts #
 
-* pf-server-start <client>
-* pf-server-update <client> <hostname>
-* pf-server-terminate <client> <hostname>
+* pf-server-start [client]
+* pf-server-update [client] [hostname]
+* pf-server-terminate [client] [hostname]
 
 
 # Doing development #
