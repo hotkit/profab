@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import fabric.network
 import logging
 import sys
 
@@ -6,10 +7,13 @@ from profab.server import Server
 
 
 def main(client, *args):
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     Server.start(client, *args)
 
 
 if __name__=="__main__":
-    main(*sys.argv[1:])
+    try:
+        main(*sys.argv[1:])
+    finally:
+        fabric.network.disconnect_all()
 
