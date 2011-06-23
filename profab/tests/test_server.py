@@ -21,3 +21,17 @@ class ServerLifecycle(TestCase):
     @mock.patch('time.sleep', lambda s: None)
     def test_start_basic(self):
         server = Server.start('test')
+
+
+    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
+    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_connect_and_terminate(self):
+        server = Server.connect('test', 'hostname')
+        server.terminate()
+
+    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
+    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    def test_try_connect_to_invalid_host(self):
+        server = Server.connect('test', 'not-a-host')
+        self.assertIs(server, None)

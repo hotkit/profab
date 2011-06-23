@@ -1,7 +1,7 @@
 import socket
 
 from profab import _Keys
-from profab.tests.mockboto.image import MockImage
+from profab.tests.mockboto.image import MockInstance, MockImage
 
 
 class Cnx(object):
@@ -35,3 +35,6 @@ class  AuthnCnx(Cnx):
 class ServerCnx(Cnx):
     def get_all_images(self, image):
         return [MockImage()]
+
+    def get_all_instances(self):
+        return [_Keys(instances=[MockInstance('running')])]
