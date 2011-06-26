@@ -1,5 +1,9 @@
 Automated tools for engaging with server infrastructure on AWS.
 
+To install use:
+
+    pip install git+git://github.com/Proteus-tech/profab.git
+
 _This project uses git flow. Don't forget to do `git flow init`_ (use defaults for all options).
 
 # Command line scripts #
