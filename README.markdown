@@ -48,3 +48,8 @@ You should run the devenv/paths script in order to set up your command line envi
 
     . devenv/paths
 
+To run the tests, create and activate a new virtual environment and then use the `runtests` script.
+
+    mkvirtualenv --no-site-packages profabdev
+    pip install -r devenv/setup.pip
+    ./runtests
