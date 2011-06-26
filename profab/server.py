@@ -78,8 +78,10 @@ class Server(object):
             _logger.info("Searching %s", region)
             cnx = region.connect(aws_access_key_id=config.keys.api,
                 aws_secret_access_key=config.keys.secret)
-            for instance in cnx.get_all_instances():
-                _logger.info("Found %s", instance)
+            for reservation in cnx.get_all_instances():
+                _logger.info("Found %s", reservation)
+                for instance in reservation.instances:
+                    servers.append(Server(config, cnx, instance))
         return servers
 
 
