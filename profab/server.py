@@ -34,7 +34,8 @@ class Server(object):
 
 
     def __str__(self):
-        return u"%s [%s] %s" % (self.instance.dns_name,
+        return u"%s (%s) [%s] %s" % (
+            self.instance.dns_name, self.instance.key_name,
             ', '.join([g.groupName for g in self.instance.groups]),
             self.instance.tags)
 
