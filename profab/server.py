@@ -101,7 +101,7 @@ class Server(object):
         sudo('apt-get update')
         sudo('apt-get dist-upgrade -y')
         self.reboot()
-        self.install_packages('byobu')
+        self.install_packages('byobu update-notifier-common')
 
 
     def terminate(self):
