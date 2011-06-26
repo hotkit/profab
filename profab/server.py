@@ -33,6 +33,12 @@ class Server(object):
         self.instance = instance
 
 
+    def __str__(self):
+        return u"%s [%s] %s" % (self.instance.dns_name,
+            ', '.join([g.groupName for g in self.instance.groups]),
+            self.instance.tags)
+
+
     @classmethod
     def start(kls, client, *roles, **conections):
         """Start a server for the specified client with the given roles
