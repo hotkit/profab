@@ -22,6 +22,8 @@ class ServerLifecycle(TestCase):
     @mock.patch('os.mkdir', lambda p: None)
     def test_start_basic(self):
         server = Server.start('test')
+        self.assertEquals(str(server),
+            u"ec2-host (host) [default] {}")
 
 
     @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
@@ -29,7 +31,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_terminate(self):
-        server = Server.connect('test', 'hostname')
+        server = Server.connect('test', 'ec2-host')
         server.terminate()
 
     @mock.patch('profab.authentication.EC2Connection', AuthnCnx)

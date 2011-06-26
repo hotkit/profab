@@ -3,15 +3,20 @@ from profab import _Keys
 
 class MockInstance(object):
     def __init__(self, state, next_state = 'running'):
+        self.dns_name = 'ec2-host'
+        self.groups = [_Keys(groupName='default')]
+        self.key_name = 'host'
+        self.tags = {}
         self.state = state
-        self.dns_name='hostname'
-        self.next_state = next_state
+
+        self.__next_state = next_state
     
+
     def update(self):
-        self.state = self.next_state
+        self.state = self.__next_state
 
     def terminate(self):
-        self.next_state = 'terminated'
+        self.__next_state = 'terminated'
 
 
 class MockImage(object):
