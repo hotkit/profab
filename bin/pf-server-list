@@ -8,6 +8,9 @@ from profab.server import Server
 
 def main(client):
     logging.basicConfig(level=logging.INFO)
+    servers = Server.get_all(client)
+    for server in servers:
+        print server
 
 
 if __name__=="__main__":
