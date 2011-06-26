@@ -57,6 +57,7 @@ class Server(object):
             server.instance.dns_name)
         time.sleep(30)
         server.dist_upgrade()
+        return server
 
 
     @classmethod
