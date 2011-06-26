@@ -27,6 +27,9 @@ class _Configuration(object):
         try:
             content = file(pathname).read()
         except IOError:
+            _logger.error("No configuration file found at %s. "
+                "Defaulting to empty configuration. "
+                "This will probably lead to authentication failures.", pathname)
             content = "{}"
         return loads(content)
 
