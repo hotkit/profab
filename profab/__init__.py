@@ -23,7 +23,7 @@ class _Configuration(object):
         _merge_attrs(self, overrides)
 
     def load_configuration(self):
-        pathname = os.path.expanduser('~/.profab/%s.json' % self.client)
+        pathname = os.path.expanduser('~/.profab/%s/ec2.json' % self.client)
         try:
             content = file(pathname).read()
         except IOError:
