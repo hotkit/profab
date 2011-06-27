@@ -26,7 +26,7 @@ class  AuthnCnx(Cnx):
             return self.key_pairs
         else:
             return super(AuthnCnx, self).get_all_key_pairs()
-    
+
     def create_key_pair(self, host):
         self.key_pairs_created.append(host)
         key_pair = _Keys(name=host)
@@ -38,8 +38,14 @@ class ServerCnx(Cnx):
     def get_all_images(self, image):
         return [MockImage()]
 
+    def create_volume(self, size, zone):
+        return _Keys()
+
     def get_all_instances(self):
         return [_Keys(instances=[MockInstance('running')])]
+
+    def get_all_zones(self):
+        return [_Keys()]
 
 
 class Region(object):
