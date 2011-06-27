@@ -5,4 +5,9 @@
 class Volume(object):
     """A single EBS volume.
     """
-    pass
+
+    @classmethod
+    def create(cls, connection, size):
+        """Create a new volume on the provided connection.
+        """
+        return "volume"
