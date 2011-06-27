@@ -1,3 +1,6 @@
+"""Profab helps to manage servers on EC2.
+
+"""
 from simplejson import loads
 import logging
 import os
@@ -23,6 +26,8 @@ class _Configuration(object):
         _merge_attrs(self, overrides)
 
     def load_configuration(self):
+        """Load the configuration from the default file for the customer.
+        """
         pathname = os.path.expanduser('~/.profab/%s/ec2.json' % self.client)
         try:
             content = file(pathname).read()

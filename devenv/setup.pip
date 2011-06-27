@@ -8,3 +8,4 @@ nose
 mock
 unittest2
 coverage
+pylint

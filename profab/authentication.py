@@ -1,18 +1,23 @@
+"""Functions for handling the authentication between the controlling
+machine and the virtual machines.
+"""
 import os
 import socket
-
-from boto.ec2.connection import EC2Connection
 
 from profab import _logger
 
 
 def get_keyname(config, cnx):
+    """Return the keyname that is to be used.
+    """
     hostname = socket.gethostname()
     get_private_key_filename(config, cnx)
     return hostname
 
 
 def get_private_key_filename(config, cnx):
+    """Fetch the key filename for this configuration and connection.
+    """
     hostname = socket.gethostname()
     foldername = os.path.expanduser('~/.profab/%s' % config.client)
     pathname = '%s/%s.pem' % (foldername, hostname)

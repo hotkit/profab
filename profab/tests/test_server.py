@@ -14,7 +14,6 @@ def _start_connection(*args):
     connections['ubuntu@%s:22' % env.host_string] = True
 
 class ServerLifecycle(TestCase):
-    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.reboot', _start_connection)
     @mock.patch('profab.server.sudo', _start_connection)
@@ -26,7 +25,6 @@ class ServerLifecycle(TestCase):
             u"ec2-host (host) [default] {}")
 
 
-    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
@@ -34,7 +32,6 @@ class ServerLifecycle(TestCase):
         server = Server.connect('test', 'ec2-host')
         server.terminate()
 
-    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('os.mkdir', lambda p: None)
     def test_try_connect_to_invalid_host(self):
@@ -43,7 +40,6 @@ class ServerLifecycle(TestCase):
 
 
 class ServerMeta(TestCase):
-    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.regions', regions)
     @mock.patch('os.mkdir', lambda p: None)
