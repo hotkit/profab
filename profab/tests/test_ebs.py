@@ -10,4 +10,4 @@ class TestVolumes(TestCase):
     def test_create(self):
         config = _Configuration('kirit')
         connection = EC2Connection(config.keys.api, config.keys.secret)
-        volume = Volume.create(connection)
+        volume = Volume.create(connection, connection.get_all_zones()[0], 2)
