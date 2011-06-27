@@ -124,7 +124,7 @@ class Server(object):
         """Install the specified packages on the machine.
         """
         # The decorator requires this to be an instance method
-        # pylint: disable-msg=R0201
+        # pylint: disable=R0201
         package_names =  ' '.join(packages)
         _logger.info("Making sure the following packages are installed: %s",
             package_names)
