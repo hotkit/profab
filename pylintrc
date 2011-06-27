@@ -24,9 +24,10 @@ load-plugins=
 
 [MESSAGES CONTROL]
 
+# I0011 Don't display which local changes we've made to pylint output
 # R0903 We don't mind classes with very few public methods
 # W0142 Allow use of * and ** 'magic'
-disable=R0903,W0142
+disable=I0011,R0903,W0142
 
 
 [REPORTS]
