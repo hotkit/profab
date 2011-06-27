@@ -27,9 +27,16 @@ The first time you connect to an EC2 region to start a machine a new private/pub
 
 # Command line scripts #
 
+For all commands `client-name` is the same as the configuration folder used above.
+
+
 ## pf-server-start ##
 
     pf-server-start client-name
+
+## pf-server-list ##
+
+    pf-server-list client-name
 
 ## pf-server-update ##
 
