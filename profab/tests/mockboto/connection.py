@@ -5,17 +5,19 @@ from profab.tests.mockboto.image import MockInstance, MockImage
 
 
 class Cnx(object):
-    def __init__(self, key, secret):
-        self.key = key
-        self.secret = secret
+    def __init__(self, aws_access_key_id, aws_secret_access_key):
+        self.key = aws_access_key_id
+        self.secret = aws_secret_access_key
 
     def get_all_key_pairs(self):
         return [_Keys(name=socket.gethostname())]
 
 
 class  AuthnCnx(Cnx):
-    def __init__(self, *args):
-        super(AuthnCnx, self).__init__(*args)
+    def __init__(self, aws_access_key_id, aws_secret_access_key,
+            **kwargs):
+        super(AuthnCnx, self).__init__(aws_access_key_id,
+            aws_secret_access_key, **kwargs)
         self.key_pairs = []
         self.key_pairs_created = []
 
@@ -38,3 +40,13 @@ class ServerCnx(Cnx):
 
     def get_all_instances(self):
         return [_Keys(instances=[MockInstance('running')])]
+
+
+class Region(object):
+    def connect(self, aws_access_key_id, aws_secret_access_key):
+        return ServerCnx(aws_access_key_id, aws_secret_access_key)
+
+
+def regions(**kwargs):
+    cnx = AuthnCnx(**kwargs)
+    return [Region(), Region()]

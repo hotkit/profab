@@ -2,6 +2,7 @@ import time
 
 from fabric.api import settings, sudo, reboot
 from fabric.state import connections
+from boto.ec2 import regions
 from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
@@ -32,6 +33,13 @@ class Server(object):
         self.instance = instance
 
 
+    def __str__(self):
+        return u"%s (%s) [%s] %s" % (
+            self.instance.dns_name, self.instance.key_name,
+            ', '.join([g.groupName for g in self.instance.groups]),
+            self.instance.tags)
+
+
     @classmethod
     def start(kls, client, *roles, **conections):
         """Start a server for the specified client with the given roles
@@ -58,6 +66,25 @@ class Server(object):
         time.sleep(30)
         server.dist_upgrade()
         return server
+
+
+    @classmethod
+    def get_all(kls, client):
+        """Connects to each region in turn and fetches all of the instances
+        currently running."""
+        servers = []
+        config = _Configuration(client)
+        region_list = regions(aws_access_key_id=config.keys.api,
+            aws_secret_access_key=config.keys.secret)
+        for region in region_list:
+            _logger.info("Searching %s", region)
+            cnx = region.connect(aws_access_key_id=config.keys.api,
+                aws_secret_access_key=config.keys.secret)
+            for reservation in cnx.get_all_instances():
+                _logger.info("Found %s", reservation)
+                for instance in reservation.instances:
+                    servers.append(Server(config, cnx, instance))
+        return servers
 
 
     @classmethod

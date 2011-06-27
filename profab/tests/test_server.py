@@ -6,7 +6,7 @@ from fabric.state import connections
 
 from profab.server import Server
 
-from profab.tests.mockboto.connection import ServerCnx, AuthnCnx
+from profab.tests.mockboto.connection import ServerCnx, AuthnCnx, regions
 
 
 def _start_connection(*args):
@@ -22,6 +22,8 @@ class ServerLifecycle(TestCase):
     @mock.patch('os.mkdir', lambda p: None)
     def test_start_basic(self):
         server = Server.start('test')
+        self.assertEquals(str(server),
+            u"ec2-host (host) [default] {}")
 
 
     @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
@@ -29,7 +31,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_terminate(self):
-        server = Server.connect('test', 'hostname')
+        server = Server.connect('test', 'ec2-host')
         server.terminate()
 
     @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
@@ -38,3 +40,12 @@ class ServerLifecycle(TestCase):
     def test_try_connect_to_invalid_host(self):
         server = Server.connect('test', 'not-a-host')
         self.assertIs(server, None)
+
+
+class ServerMeta(TestCase):
+    @mock.patch('profab.authentication.EC2Connection', AuthnCnx)
+    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.regions', regions)
+    @mock.patch('os.mkdir', lambda p: None)
+    def test_get_servers(self):
+        servers = Server.get_all('test')

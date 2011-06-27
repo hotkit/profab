@@ -1,3 +1,4 @@
 2011-06-26  Kirit Saelensminde  <kirit@felspar.com>
  Made pip installable
  Added ChangeLog
+ Added pf-server-list for listing all EC2 instances and their details
