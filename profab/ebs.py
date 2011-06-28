@@ -1,6 +1,8 @@
 """Handle EBS volumes.
 """
 
+from profab import _logger
+
 
 class Volume(object):
     """A single EBS volume.
@@ -10,7 +12,15 @@ class Volume(object):
 
 
     @classmethod
-    def create(cls, connection, zone, size):
+    def create(cls, server, size, device="/dev/sdx"):
         """Create a new volume on the provided connection.
         """
-        return Volume(connection.create_volume(size, zone))
+        _logger.info("Creating volume size %dGB on %s",
+            size, server.instance.placement)
+        volume = Volume(server.cnx.create_volume(size,
+            server.instance.placement))
+        _logger.info("Attaching volume %s to %s as %s",
+            volume.volume, server.instance, device)
+        volume.attached = server.cnx.attach_volume(
+            volume.volume.id, server.instance.id, device)
+        return volume
