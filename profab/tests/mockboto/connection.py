@@ -15,6 +15,7 @@ class MockConnection(object):
         self._key_pairs_created.append(host)
         key_pair = _Keys(name=host)
         key_pair.save = lambda f: None
+        self._key_pairs.append(key_pair)
         return key_pair
 
     def create_volume(self, size, zone):
