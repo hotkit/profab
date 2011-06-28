@@ -34,8 +34,8 @@ class MockConnection(object):
     def get_all_instances(self):
         return [_Keys(instances=[MockInstance('running')])]
 
-    def get_all_zones(self):
-        return [_Keys()]
+    #def get_all_zones(self):
+        #return [_Keys()]
 
 
 class Region(object):
