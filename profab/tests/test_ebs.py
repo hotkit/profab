@@ -4,12 +4,12 @@ import mock
 from profab import _Configuration
 from profab.ebs import Volume
 
-from profab.tests.mockboto.connection import ServerCnx
+from profab.tests.mockboto.connection import MockConnection
 
 
 class TestVolumes(TestCase):
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     def test_create(self):
         config = _Configuration('kirit')
-        connection = ServerCnx(config.keys.api, config.keys.secret)
+        connection = MockConnection(config.keys.api, config.keys.secret)
         volume = Volume.create(connection, connection.get_all_zones()[0], 2)

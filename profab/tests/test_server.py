@@ -6,7 +6,7 @@ from fabric.state import connections
 
 from profab.server import Server
 
-from profab.tests.mockboto.connection import ServerCnx, AuthnCnx, regions
+from profab.tests.mockboto.connection import MockConnection, regions
 
 
 def _start_connection(*args, **kwargs):
@@ -15,7 +15,7 @@ def _start_connection(*args, **kwargs):
     return ''
 
 class ServerLifecycle(TestCase):
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('profab.server.append', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
     @mock.patch('profab.server.run', _start_connection)
@@ -28,7 +28,7 @@ class ServerLifecycle(TestCase):
             u"ec2-host (host) [default] {}")
 
 
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('profab.server.append', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
     @mock.patch('profab.server.run', _start_connection)
@@ -53,7 +53,7 @@ class ServerLifecycle(TestCase):
         server.dist_upgrade()
 
 
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_terminate(self):
@@ -82,7 +82,7 @@ class ServerLifecycle(TestCase):
         server.add_role('munin', 'monitor.example.com')
 
 
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('os.mkdir', lambda p: None)
     def test_try_connect_to_invalid_host(self):
         server = Server.connect('test', 'not-a-host')
@@ -98,7 +98,7 @@ class ServerLifecycle(TestCase):
 
 
 class ServerMeta(TestCase):
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('profab.server.regions', regions)
     @mock.patch('os.mkdir', lambda p: None)
     def test_get_servers(self):
