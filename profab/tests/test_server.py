@@ -2,17 +2,12 @@ from unittest2 import TestCase
 import mock
 
 from fabric.api import env
-from fabric.state import connections
 
 from profab.server import Server
 
 from profab.tests.mockboto.connection import MockConnection, regions
+from profab.tests.mockfabric.connections import start_connection
 
-
-def _start_connection(*args, **kwargs):
-    print env.host_string
-    connections['ubuntu@%s:22' % env.host_string] = True
-    return ''
 
 class ServerLifecycle(TestCase):
     @mock.patch('profab.server.EC2Connection', MockConnection)
