@@ -10,7 +10,7 @@ from profab.server import Server
 def main(client, hostname, size):
     logging.basicConfig(level=logging.INFO)
     server = Server.connect(client, hostname)
-    volume = Volume.create(server, long(3))
+    volume = Volume.create(server, long(size))
 
 
 if __name__=="__main__":
