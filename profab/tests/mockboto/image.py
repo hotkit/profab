@@ -24,3 +24,9 @@ class MockInstance(object):
 class MockImage(object):
     def run(self, instance_type, key_name, security_groups):
         return _Keys(instances=[MockInstance('pending')])
+
+
+class MockVolume(object):
+    def attach(self, instance_id, device):
+        print "Attaching", instance_id, device
+        return True

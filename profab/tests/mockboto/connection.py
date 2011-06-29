@@ -1,7 +1,7 @@
 import socket
 
 from profab import _Keys
-from profab.tests.mockboto.image import MockInstance, MockImage
+from profab.tests.mockboto.image import MockInstance, MockImage, MockVolume
 
 
 class MockConnection(object):
@@ -11,10 +11,6 @@ class MockConnection(object):
         self._key_pairs = []
         self._key_pairs_created = []
 
-    def attach_volume(self, volume_id, instance_id, device):
-        print "Attaching", volume_id, instance_id, device
-        return True
-
     def create_key_pair(self, host):
         self._key_pairs_created.append(host)
         key_pair = _Keys(name=host)
@@ -23,7 +19,7 @@ class MockConnection(object):
         return key_pair
 
     def create_volume(self, size, zone):
-        return _Keys(id='volume:a')
+        return MockVolume()
 
     def get_all_key_pairs(self):
         return self._key_pairs
