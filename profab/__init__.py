@@ -21,9 +21,15 @@ class _Configuration(object):
         self.host = 'ec2'
         self.keys = _Keys(api = 'test-api-key',
             secret = 'test-api-secret')
+        self.ssh = _Keys(ubuntu=[])
         # Load overrides from a file and merge them with this object
         overrides = self.load_configuration()
         _merge_attrs(self, overrides)
+        # Ensure that the running user's public key is on the server
+        pub_key_file =  os.path.expanduser('~/.ssh/id_rsa.pub')
+        pub_key = file(pub_key_file).readline()
+        if not pub_key in self.ssh.ubuntu:
+            self.ssh.ubuntu.append(pub_key)
 
     def load_configuration(self):
         """Load the configuration from the default file for the customer.

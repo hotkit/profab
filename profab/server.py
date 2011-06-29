@@ -8,7 +8,7 @@ from fabric.state import connections
 from boto.ec2 import regions
 from boto.ec2.connection import EC2Connection
 
-from profab import _Configuration, _Keys, _logger
+from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
 
 
@@ -137,7 +137,7 @@ class Server(object):
         """Perform a dist-upgrade and make sure the base packages are installed.
         """
         _logger.info("First ensure all keys are on server")
-        for key in getattr(getattr(self.config, 'ssh', _Keys()), 'ubuntu', []):
+        for key in self.config.ssh.ubuntu:
             # append won't add  a line that already exists
             append('~/.ssh/authorized_keys', key)
         _logger.info("Starting dist-upgrade sequence for %s", self.instance)

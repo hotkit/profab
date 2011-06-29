@@ -15,6 +15,7 @@ def _start_connection(*args):
 
 class ServerLifecycle(TestCase):
     @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.append', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
     @mock.patch('profab.server.sudo', _start_connection)
     @mock.patch('time.sleep', lambda s: None)
@@ -23,6 +24,17 @@ class ServerLifecycle(TestCase):
         server = Server.start('test')
         self.assertEquals(str(server),
             u"ec2-host (host) [default] {}")
+
+
+    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.append', _start_connection)
+    @mock.patch('profab.server.reboot', _start_connection)
+    @mock.patch('profab.server.sudo', _start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    @mock.patch('os.mkdir', lambda p: None)
+    def test_connect_and_upgrade(self):
+        server = Server.connect('test', 'ec2-host')
+        server.dist_upgrade()
 
 
     @mock.patch('profab.server.EC2Connection', ServerCnx)
