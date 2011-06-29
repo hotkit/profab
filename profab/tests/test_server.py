@@ -12,12 +12,13 @@ from profab.tests.mockboto.connection import ServerCnx, AuthnCnx, regions
 def _start_connection(*args):
     print env.host_string
     connections['ubuntu@%s:22' % env.host_string] = True
+    return ''
 
 class ServerLifecycle(TestCase):
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.append', _start_connection)
-    @mock.patch('profab.server.contains', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
+    @mock.patch('profab.server.run', _start_connection)
     @mock.patch('profab.server.sudo', _start_connection)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
@@ -29,8 +30,8 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.append', _start_connection)
-    @mock.patch('profab.server.contains', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
+    @mock.patch('profab.server.run', _start_connection)
     @mock.patch('profab.server.sudo', _start_connection)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)

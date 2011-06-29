@@ -3,7 +3,7 @@
 import time
 
 from fabric.api import settings, sudo, reboot, run
-from fabric.contrib.files import append, contains
+from fabric.contrib.files import append
 from fabric.state import connections
 from boto.ec2 import regions
 from boto.ec2.connection import EC2Connection
