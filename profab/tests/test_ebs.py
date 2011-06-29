@@ -11,7 +11,9 @@ from profab.tests.mockfabric.connections import start_connection
 
 class TestVolumes(TestCase):
     @mock.patch('profab.server.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
     @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)

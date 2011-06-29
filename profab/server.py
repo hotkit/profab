@@ -132,7 +132,8 @@ class Server(object):
             if volume.attach_data.instance_id == self.instance.id:
                 found = Volume(self, volume, volume.attach_data.device,
                     volume.attach_data.status == 'attached')
-                _logger.info("Found volume %s on %s", found.volume.id, found.device)
+                _logger.info("Found volume %s on %s",
+                    found.volume.id, found.device)
                 volumes.append(found)
         return volumes
 

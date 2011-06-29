@@ -27,6 +27,9 @@ class MockConnection(object):
     def get_all_images(self, image):
         return [MockImage()]
 
+    def get_all_volumes(self):
+        return [MockVolume()]
+
     def get_all_instances(self):
         return [_Keys(instances=[MockInstance('running')])]
 
