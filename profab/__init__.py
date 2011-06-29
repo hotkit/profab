@@ -27,8 +27,8 @@ class _Configuration(object):
         _merge_attrs(self, overrides)
         # Ensure that the running user's public key is on the server
         pub_key_file =  os.path.expanduser('~/.ssh/id_rsa.pub')
-        pub_key = file(pub_key_file).readline()
-        if not pub_key in self.ssh.ubuntu:
+        pub_key = file(pub_key_file).readline()[:-1]
+        if pub_key not in self.ssh.ubuntu:
             self.ssh.ubuntu.append(pub_key)
 
     def load_configuration(self):

@@ -16,6 +16,7 @@ def _start_connection(*args):
 class ServerLifecycle(TestCase):
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.append', _start_connection)
+    @mock.patch('profab.server.contains', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
     @mock.patch('profab.server.sudo', _start_connection)
     @mock.patch('time.sleep', lambda s: None)
@@ -28,6 +29,7 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.append', _start_connection)
+    @mock.patch('profab.server.contains', _start_connection)
     @mock.patch('profab.server.reboot', _start_connection)
     @mock.patch('profab.server.sudo', _start_connection)
     @mock.patch('time.sleep', lambda s: None)
