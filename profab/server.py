@@ -10,6 +10,7 @@ from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
+from profab.ebs import Volume
 
 
 def _on_this_server(function):
@@ -120,6 +121,20 @@ class Server(object):
         """
         reboot(30)
         del connections[self.instance.dns_name]
+
+
+    def get_volumes(self):
+        """Return all of the volumes attached to this server.
+        """
+        volumes = []
+        all_volumes = self.cnx.get_all_volumes()
+        for volume in all_volumes:
+            if volume.attach_data.instance_id == self.instance.id:
+                found = Volume(self, volume, volume.attach_data.device,
+                    volume.attach_data.status == 'attached')
+                _logger.info("Found volume %s on %s", found.volume.id, found.device)
+                volumes.append(found)
+        return volumes
 
 
     @_on_this_server
