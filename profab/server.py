@@ -2,7 +2,8 @@
 """
 import time
 
-from fabric.api import settings, sudo, reboot
+from fabric.api import settings, sudo, reboot, run
+from fabric.contrib.files import append
 from fabric.state import connections
 from boto.ec2 import regions
 from boto.ec2.connection import EC2Connection
@@ -135,6 +136,10 @@ class Server(object):
     def dist_upgrade(self):
         """Perform a dist-upgrade and make sure the base packages are installed.
         """
+        _logger.info("First ensure all keys are on server")
+        for key in self.config.ssh.ubuntu:
+            # append won't add  a line that already exists
+            append('~/.ssh/authorized_keys', key)
         _logger.info("Starting dist-upgrade sequence for %s", self.instance)
         sudo('apt-get update')
         sudo('apt-get dist-upgrade -y')
