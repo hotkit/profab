@@ -2,7 +2,7 @@
 """
 import time
 
-from fabric.api import settings, sudo, reboot
+from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append, contains
 from fabric.state import connections
 from boto.ec2 import regions
@@ -137,9 +137,11 @@ class Server(object):
         """Perform a dist-upgrade and make sure the base packages are installed.
         """
         _logger.info("First ensure all keys are on server")
+        key_file = '~/.ssh/authorized_keys'
+        authorized_keys = run('cat %s' % key_file)
         for key in self.config.ssh.ubuntu:
-            if not contains('/~.ssh/authorized_keys', key.split()[2]):
-                append('~/.ssh/authorized_keys', key)
+            if key.split()[2] not in authorized_keys:
+                append(key_file, key)
         _logger.info("Starting dist-upgrade sequence for %s", self.instance)
         sudo('apt-get update')
         sudo('apt-get dist-upgrade -y')
