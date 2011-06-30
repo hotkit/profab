@@ -129,7 +129,7 @@ class Server(object):
         package_names =  ' '.join(packages)
         _logger.info("Making sure the following packages are installed: %s",
             package_names)
-        sudo('apt-get install %s' % package_names)
+        sudo('apt-get install -y %s' % package_names)
 
 
     @_on_this_server
@@ -147,6 +147,15 @@ class Server(object):
         sudo('apt-get dist-upgrade -y')
         self.reboot()
         self.install_packages('byobu', 'update-notifier-common')
+
+
+    @_on_this_server
+    def add_role(self, role):
+        """Adds a role to the server.
+        """
+        module = __import__('profab.role.%s' % role,
+            globals(), locals(), ['AddRole'])
+        self.install_packages(*module.AddRole.packages)
 
 
     def terminate(self):

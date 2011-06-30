@@ -9,6 +9,7 @@ from profab.server import Server
 def main(client, hostname, role):
     logging.basicConfig(level=logging.INFO)
     server = Server.connect(client, hostname)
+    server.add_role(role)
 
 
 if __name__=="__main__":

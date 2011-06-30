@@ -47,6 +47,15 @@ class ServerLifecycle(TestCase):
         server = Server.connect('test', 'ec2-host')
         server.terminate()
 
+
+    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.sudo', _start_connection)
+    @mock.patch('os.mkdir', lambda p: None)
+    def test_connect_and_add_role(self):
+        server = Server.connect('test', 'ec2-host')
+        server.add_role('postgres')
+
+
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('os.mkdir', lambda p: None)
     def test_try_connect_to_invalid_host(self):
