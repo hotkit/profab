@@ -16,5 +16,5 @@ def process_arguments(*args):
         if head.startswith('--'):
             instructions.append((head[2:], args.pop()))
         else:
-            instructions.append((head,))
+            instructions.append((head, None))
     return instructions

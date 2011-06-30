@@ -10,7 +10,7 @@ class TestArguments(TestCase):
 
     def test_one_command(self):
         commands = process_arguments('postgres')
-        self.assertEquals(commands, [('postgres',)])
+        self.assertEquals(commands, [('postgres', None)])
 
     def test_one_configuration(self):
         commands = process_arguments('--monitor', 'localhost')
