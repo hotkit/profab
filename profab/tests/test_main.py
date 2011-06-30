@@ -27,3 +27,7 @@ class TestArguments(TestCase):
     def test_two_command_plus_one_configuration(self):
         commands = process_arguments('postgres', 'munin', '--munin', 'localhost')
         self.assertEquals(commands, [('postgres', None), ('munin', None), ('munin', 'localhost')])
+
+    def test_missing_option(self):
+        with self.assertRaises(IndexError):
+            process_arguments('--munin')
