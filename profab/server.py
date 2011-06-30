@@ -72,6 +72,8 @@ class Server(object):
             server.instance.dns_name)
         time.sleep(30)
         server.dist_upgrade()
+        for role in roles:
+            server.add_role(role)
         return server
 
 
@@ -153,6 +155,7 @@ class Server(object):
     def add_role(self, role):
         """Adds a role to the server.
         """
+        _logger.info("Adding role %s to server %s", role, self)
         module = __import__('profab.role.%s' % role,
             globals(), locals(), ['AddRole'])
         self.install_packages(*module.AddRole.packages)
