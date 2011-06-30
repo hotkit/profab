@@ -158,7 +158,8 @@ class Server(object):
         _logger.info("Adding role %s to server %s", role, self)
         module = __import__('profab.role.%s' % role,
             globals(), locals(), ['AddRole'])
-        self.install_packages(*module.AddRole.packages)
+        roler_adder = module.AddRole(self)
+        self.install_packages(*roler_adder.packages)
 
 
     def terminate(self):
