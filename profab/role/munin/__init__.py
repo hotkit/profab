@@ -8,7 +8,8 @@ from fabric.operations import put
 
 from profab import _logger
 from profab.role import Role
-from profab.role.munin.templates import APACHE_CONFIG, MUNIN_CONFIG
+from profab.role.munin.templates import APACHE_CONFIG, MUNIN_CONFIG, \
+    MUNIN_NODE_CONFIG, MUNIN_SERVER_CONFIG
 
 
 def _template(config):
@@ -52,8 +53,12 @@ class Configure(Role):
         configuration on the node.
         """
         _logger.info("Configuring node %s", self.server)
+        put(_template(MUNIN_NODE_CONFIG), "/etc/munin/munin-node.conf",
+            use_sudo=True)
         sudo("service munin-node restart")
 
         with settings(host_string=self.parameter):
             _logger.info("Configuring server %s", self.parameter)
+            put(_template(MUNIN_SERVER_CONFIG),
+                "/etc/munin/munin-conf.d/server1", use_sudo=True)
             sudo("service apache2 reload")
