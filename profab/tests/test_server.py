@@ -69,6 +69,7 @@ class ServerLifecycle(TestCase):
         server.add_role('postgres')
 
 
+    @mock.patch('profab.role.munin.exists', lambda f: True)
     @mock.patch('profab.role.munin.put', _start_connection)
     @mock.patch('profab.role.munin.run', _start_connection)
     @mock.patch('profab.role.munin.sudo', _start_connection)
@@ -77,6 +78,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_configure(self):
         server = Server.connect('test', 'ec2-host')
+        server.add_role('munin')
         server.add_role('munin', 'monitor.example.com')
 
 
