@@ -3,13 +3,16 @@ import fabric.network
 import logging
 import sys
 
+from profab.main import process_arguments
 from profab.server import Server
 
 
-def main(client, hostname, role):
+def main(client, hostname, *roles):
     logging.basicConfig(level=logging.INFO)
     server = Server.connect(client, hostname)
-    server.add_role(role)
+    commands = process_arguments(*roles)
+    for instruction in commands:
+        server.add_role(*instruction)
 
 
 if __name__=="__main__":

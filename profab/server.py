@@ -152,14 +152,17 @@ class Server(object):
 
 
     @_on_this_server
-    def add_role(self, role):
+    def add_role(self, role, parameter = None):
         """Adds a role to the server.
         """
         _logger.info("Adding role %s to server %s", role, self)
         module = __import__('profab.role.%s' % role,
-            globals(), locals(), ['AddRole'])
-        roler_adder = module.AddRole(self)
-        self.install_packages(*roler_adder.packages)
+            globals(), locals(), ['AddRole', 'Configure'])
+        if parameter:
+            role_adder = module.Configure(self, parameter)
+        else:
+            role_adder = module.AddRole(self)
+        self.install_packages(*role_adder.packages)
 
 
     def terminate(self):
