@@ -36,11 +36,11 @@ class ServerLifecycle(TestCase):
             u"ec2-host (host) [default] {}")
 
 
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
-    @mock.patch('profab.server.append', _start_connection)
-    @mock.patch('profab.server.reboot', _start_connection)
-    @mock.patch('profab.server.run', _start_connection)
-    @mock.patch('profab.server.sudo', _start_connection)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_upgrade(self):
@@ -56,8 +56,8 @@ class ServerLifecycle(TestCase):
         server.terminate()
 
 
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
-    @mock.patch('profab.server.sudo', _start_connection)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
+    @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_add_role(self):
         server = Server.connect('test', 'ec2-host')
@@ -65,11 +65,11 @@ class ServerLifecycle(TestCase):
 
 
     @mock.patch('profab.role.munin.exists', lambda f: True)
-    @mock.patch('profab.role.munin.put', _start_connection)
-    @mock.patch('profab.role.munin.run', _start_connection)
-    @mock.patch('profab.role.munin.sudo', _start_connection)
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
-    @mock.patch('profab.server.sudo', _start_connection)
+    @mock.patch('profab.role.munin.put', start_connection)
+    @mock.patch('profab.role.munin.run', start_connection)
+    @mock.patch('profab.role.munin.sudo', start_connection)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
+    @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('os.mkdir', lambda p: None)
     def test_connect_and_configure(self):
         server = Server.connect('test', 'ec2-host')
@@ -83,7 +83,7 @@ class ServerLifecycle(TestCase):
         server = Server.connect('test', 'not-a-host')
         self.assertIs(server, None)
 
-    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('time.sleep', lambda s: None)
     @mock.patch('os.mkdir', lambda p: None)
     def test_server_role_not_found(self):
