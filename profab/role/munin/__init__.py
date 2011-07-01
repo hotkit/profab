@@ -2,7 +2,7 @@
 """
 from cStringIO import StringIO
 
-from fabric.api import settings, sudo
+from fabric.api import run, settings, sudo
 from fabric.contrib.files import exists
 from fabric.operations import put
 
@@ -60,5 +60,5 @@ class Configure(Role):
         with settings(host_string=self.parameter):
             _logger.info("Configuring server %s", self.parameter)
             put(_template(MUNIN_SERVER_CONFIG),
-                "/etc/munin/munin-conf.d/server1", use_sudo=True)
-            sudo("service apache2 reload")
+                "/etc/munin/munin-conf.d/ec2-50-19-12-121.compute-1.amazonaws.com", use_sudo=True)
+            run("sudo -u munin /usr/bin/munin-cron")

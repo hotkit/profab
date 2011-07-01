@@ -28,6 +28,7 @@ host *
 port 4949
 """
 
-MUNIN_SERVER_CONFIG = """[ec2-server.example.com]
-127.0.0.1
+MUNIN_SERVER_CONFIG = """[ec2-50-19-12-121.compute-1.amazonaws.com]
+    address localhost
+    use_node_name yes
 """
