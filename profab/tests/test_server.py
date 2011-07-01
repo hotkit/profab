@@ -88,6 +88,14 @@ class ServerLifecycle(TestCase):
         server = Server.connect('test', 'not-a-host')
         self.assertIs(server, None)
 
+    @mock.patch('profab.server.EC2Connection', ServerCnx)
+    @mock.patch('time.sleep', lambda s: None)
+    @mock.patch('os.mkdir', lambda p: None)
+    def test_server_role_not_found(self):
+        server = Server.connect('test', 'ec2-host')
+        with self.assertRaises(ImportError):
+            server.add_role('not-a-role')
+
 
 class ServerMeta(TestCase):
     @mock.patch('profab.server.EC2Connection', ServerCnx)
