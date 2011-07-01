@@ -1,6 +1,5 @@
 """Functions for generating Munin configuration files
 """
-from cStringIO import StringIO
 
 
 APACHE_CONFIG = """

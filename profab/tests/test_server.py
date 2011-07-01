@@ -9,7 +9,7 @@ from profab.server import Server
 from profab.tests.mockboto.connection import ServerCnx, AuthnCnx, regions
 
 
-def _start_connection(*args):
+def _start_connection(*args, **kwargs):
     print env.host_string
     connections['ubuntu@%s:22' % env.host_string] = True
     return ''
@@ -69,6 +69,9 @@ class ServerLifecycle(TestCase):
         server.add_role('postgres')
 
 
+    @mock.patch('profab.role.munin.put', _start_connection)
+    @mock.patch('profab.role.munin.run', _start_connection)
+    @mock.patch('profab.role.munin.sudo', _start_connection)
     @mock.patch('profab.server.EC2Connection', ServerCnx)
     @mock.patch('profab.server.sudo', _start_connection)
     @mock.patch('os.mkdir', lambda p: None)

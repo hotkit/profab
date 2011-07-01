@@ -13,9 +13,11 @@ from profab.role.munin.templates import APACHE_CONFIG, MUNIN_CONFIG, \
 
 
 def _template(config):
-    f = StringIO()
-    f.write(config)
-    return f
+    """Turns a template string into an file object for uploading to the server.
+    """
+    memory_file = StringIO()
+    memory_file.write(config)
+    return memory_file
 
 
 class AddRole(Role):
@@ -60,5 +62,7 @@ class Configure(Role):
         with settings(host_string=self.parameter):
             _logger.info("Configuring server %s", self.parameter)
             put(_template(MUNIN_SERVER_CONFIG),
-                "/etc/munin/munin-conf.d/ec2-50-19-12-121.compute-1.amazonaws.com", use_sudo=True)
+                "/etc/munin/munin-conf.d/%s"
+                    "ec2-50-19-12-121.compute-1.amazonaws.com",
+                use_sudo=True)
             run("sudo -u munin /usr/bin/munin-cron")
