@@ -28,9 +28,12 @@ class MockImage(object):
 
 class MockVolume(object):
     def __init__(self):
-        self.attach_data = _Keys(instance_id='')
+        self.id = 'v-test1'
+        self.attach_data = _Keys(instance_id='i-test1',
+            device='/dev/sda1', status='attached')
 
 
     def attach(self, instance_id, device):
         print "Attaching", instance_id, device
+        self.intance_id = instance_id
         return True
