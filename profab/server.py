@@ -163,6 +163,7 @@ class Server(object):
         else:
             role_adder = module.AddRole(self)
         self.install_packages(*role_adder.packages)
+        role_adder.configure()
 
 
     def terminate(self):
