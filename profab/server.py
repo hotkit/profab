@@ -72,6 +72,8 @@ class Server(object):
             server.instance.dns_name)
         time.sleep(30)
         server.dist_upgrade()
+        for role in roles:
+            server.add_role(role)
         return server
 
 
@@ -129,7 +131,7 @@ class Server(object):
         package_names =  ' '.join(packages)
         _logger.info("Making sure the following packages are installed: %s",
             package_names)
-        sudo('apt-get install %s' % package_names)
+        sudo('apt-get install -y %s' % package_names)
 
 
     @_on_this_server
@@ -147,6 +149,29 @@ class Server(object):
         sudo('apt-get dist-upgrade -y')
         self.reboot()
         self.install_packages('byobu', 'update-notifier-common')
+
+
+    @_on_this_server
+    def add_role(self, role, parameter = None):
+        """Adds a role to the server.
+        """
+        _logger.info("Adding role %s to server %s", role, self)
+        import_names = ['AddRole', 'Configure']
+        try:
+            module = __import__(role, globals(), locals(), import_names)
+        except ImportError:
+            try:
+                module = __import__('profab.role.%s' % role, globals(),
+                    locals(), import_names)
+            except ImportError:
+                raise ImportError("Could not import %s or profab.role.%s" %
+                    (role, role))
+        if parameter:
+            role_adder = module.Configure(self, parameter)
+        else:
+            role_adder = module.AddRole(self)
+        self.install_packages(*role_adder.packages)
+        role_adder.configure()
 
 
     def terminate(self):
