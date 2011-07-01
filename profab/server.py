@@ -156,8 +156,16 @@ class Server(object):
         """Adds a role to the server.
         """
         _logger.info("Adding role %s to server %s", role, self)
-        module = __import__('profab.role.%s' % role,
-            globals(), locals(), ['AddRole', 'Configure'])
+        import_names = ['AddRole', 'Configure']
+        try:
+            module = __import__(role, globals(), locals(), import_names)
+        except ImportError:
+            try:
+                module = __import__('profab.role.%s' % role, globals(),
+                    locals(), import_names)
+            except ImportError:
+                raise ImportError("Could not import %s or profab.role.%s" %
+                    (role, role))
         if parameter:
             role_adder = module.Configure(self, parameter)
         else:
