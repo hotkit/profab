@@ -5,6 +5,9 @@
 class Role(object):
     """Base class for roles.
     """
+    # By default require no packages
+    packages = []
+
     def __init__(self, server, parameter = None):
         self.server = server
         self.parameter = parameter
