@@ -53,6 +53,8 @@ class Server(object):
     def start(cls, client, *roles):
         """Start a server for the specified client with the given roles
         and connect the requested services.
+        
+        Roles are passed as either a name or a tuple (name, parameter).
         """
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
@@ -67,7 +69,7 @@ class Server(object):
             reservation, reservation.instances)
 
         server = Server(config, cnx, reservation.instances[0])
-        role_adders = server.get_role_adders(*[(r, None) for r in roles])
+        role_adders = server.get_role_adders(*roles)
         _ = [role.started() for role in role_adders]
 
         while server.instance.state == 'pending':
@@ -205,7 +207,11 @@ class Server(object):
         """Convert the arguments into a list of commands or options and values.
         """
         role_adders = []
-        for role, parameter in roles:
+        for role_argument in roles:
+            if type(role_argument) == tuple:
+                role, parameter = role_argument
+            else:
+                role, parameter = role_argument, None
             import_names = ['AddRole', 'Configure']
             try:
                 module = __import__(role, globals(), locals(), import_names)
