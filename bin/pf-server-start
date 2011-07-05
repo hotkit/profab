@@ -3,12 +3,13 @@ import fabric.network
 import logging
 import sys
 
+from profab.main import process_arguments
 from profab.server import Server
 
 
 def main(client, *args):
     logging.basicConfig(level=logging.INFO)
-    Server.start(client, *args)
+    Server.start(client, *process_arguments(*args))
 
 
 if __name__=="__main__":
