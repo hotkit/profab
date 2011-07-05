@@ -20,8 +20,8 @@ def _on_this_server(function):
         """Wrapped method
         """
         keyfile = get_private_key_filename(server.config, server.cnx)
-        with settings(host_string=server.instance.dns_name, user='ubuntu',
-                key_filename=keyfile):
+        with settings(host_string=server.eip or server.instance.dns_name,
+                user='ubuntu', key_filename=keyfile):
             function(server, *args, **kwargs)
     return wrapper
 
@@ -38,6 +38,7 @@ class Server(object):
         """
         self.config = config
         self.cnx = cnx
+        self.eip = None
         self.instance = instance
 
 
