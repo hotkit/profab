@@ -1,6 +1,6 @@
 """This module handles the connection to the virtual machines running on EC2.
 """
-import socket
+from socket import getaddrinfo
 import time
 
 from fabric.api import settings, sudo, reboot, run
@@ -118,8 +118,7 @@ class Server(object):
         reservations = cnx.get_all_instances()
         _logger.info("Reservations are  %s", reservations)
         ips = set([sockaddr[0]
-            for (family, socktype, proto, canonname, sockaddr) in
-                socket.getaddrinfo(hostname, 22)])
+            for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
         for reservation in reservations:
             instance = reservation.instances[0]
             _logger.info("instance %s...", instance.dns_name)

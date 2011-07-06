@@ -6,6 +6,7 @@ class MockInstance(object):
         self.dns_name = 'ec2-host'
         self.groups = [_Keys(groupName='default')]
         self.id = 'i-test1'
+        self.ip_address = '10.56.32.4'
         self.key_name = 'host'
         self.placement = 'ec2-zone'
         self.state = state
