@@ -1,5 +1,6 @@
 """This module handles the connection to the virtual machines running on EC2.
 """
+from socket import getaddrinfo
 import time
 
 from fabric.api import settings, sudo, reboot, run
@@ -20,8 +21,8 @@ def _on_this_server(function):
         """Wrapped method
         """
         keyfile = get_private_key_filename(server.config, server.cnx)
-        with settings(host_string=server.instance.dns_name, user='ubuntu',
-                key_filename=keyfile):
+        with settings(host_string=server.eip or server.instance.dns_name,
+                user='ubuntu', key_filename=keyfile):
             function(server, *args, **kwargs)
     return wrapper
 
@@ -38,6 +39,7 @@ class Server(object):
         """
         self.config = config
         self.cnx = cnx
+        self.eip = None
         self.instance = instance
 
 
@@ -52,18 +54,25 @@ class Server(object):
     def start(cls, client, *roles):
         """Start a server for the specified client with the given roles
         and connect the requested services.
+        
+        Roles are passed as either a name or a tuple (name, parameter).
         """
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
         cnx = EC2Connection(config.keys.api, config.keys.secret)
+
         image = cnx.get_all_images('ami-2cc83145')[0]
         reservation = image.run(instance_type='t1.micro',
             key_name=get_keyname(config, cnx),
             security_groups=['default'])
         _logger.debug("Have reservation %s for new server with instances %s",
             reservation, reservation.instances)
+
         server = Server(config, cnx, reservation.instances[0])
+        role_adders = server.get_role_adders(*roles)
+        _ = [role.started() for role in role_adders]
+
         while server.instance.state == 'pending':
             _logger.info("Waiting 10s for instance to start...")
             time.sleep(10)
@@ -72,9 +81,10 @@ class Server(object):
             " Waiting 30s for machine to boot.", server.instance.state,
             server.instance.dns_name)
         time.sleep(30)
+
         server.dist_upgrade()
-        for role in roles:
-            server.add_role(role)
+        server.add_roles(role_adders)
+
         return server
 
 
@@ -106,10 +116,13 @@ class Server(object):
         config = _Configuration(client)
         cnx = EC2Connection(config.keys.api, config.keys.secret)
         reservations = cnx.get_all_instances()
-        _logger.debug("Found  %s", reservations)
+        _logger.info("Reservations are  %s", reservations)
+        ips = set([sockaddr[0]
+            for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
         for reservation in reservations:
             instance = reservation.instances[0]
-            if instance.dns_name == hostname:
+            _logger.info("instance %s...", instance.dns_name)
+            if instance.ip_address in ips:
                 _logger.info("Found %s", instance)
                 return Server(config, cnx, instance)
         return None
@@ -167,27 +180,20 @@ class Server(object):
         self.install_packages('byobu', 'update-notifier-common')
 
 
-    @_on_this_server
-    def add_role(self, role, parameter = None):
-        """Adds a role to the server.
+    def add_role(self, name, parameter=None):
+        """Add a single specific role to the server (with optional parameter).
         """
-        _logger.info("Adding role %s to server %s", role, self)
-        import_names = ['AddRole', 'Configure']
-        try:
-            module = __import__(role, globals(), locals(), import_names)
-        except ImportError:
-            try:
-                module = __import__('profab.role.%s' % role, globals(),
-                    locals(), import_names)
-            except ImportError:
-                raise ImportError("Could not import %s or profab.role.%s" %
-                    (role, role))
-        if parameter:
-            role_adder = module.Configure(self, parameter)
-        else:
-            role_adder = module.AddRole(self)
-        self.install_packages(*role_adder.packages)
-        role_adder.configure()
+        adders = self.get_role_adders((name, parameter))
+        self.add_roles(adders)
+
+
+    @_on_this_server
+    def add_roles(self, role_adders):
+        """Adds a list of roles to the server.
+        """
+        for role_adder in role_adders:
+            self.install_packages(*role_adder.packages)
+            role_adder.configure()
 
 
     def terminate(self):
@@ -199,4 +205,30 @@ class Server(object):
             time.sleep(10)
             self.instance.update()
         _logger.info("Instance state now %s", self.instance.state)
+
+
+    def get_role_adders(self, *roles):
+        """Convert the arguments into a list of commands or options and values.
+        """
+        role_adders = []
+        for role_argument in roles:
+            if type(role_argument) == tuple:
+                role, parameter = role_argument
+            else:
+                role, parameter = role_argument, None
+            import_names = ['AddRole', 'Configure']
+            try:
+                module = __import__(role, globals(), locals(), import_names)
+            except ImportError:
+                try:
+                    module = __import__('profab.role.%s' % role, globals(),
+                        locals(), import_names)
+                except ImportError:
+                    raise ImportError("Could not import %s or profab.role.%s" %
+                        (role, role))
+            if parameter:
+                role_adders.append(module.Configure(self, parameter))
+            else:
+                role_adders.append(module.AddRole(self))
+        return role_adders
 

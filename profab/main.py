@@ -4,7 +4,8 @@
 
 
 def process_arguments(*args):
-    """Convert the arguments into a list of commands or options and values.
+    """Do the initial argument parse phase. This produces tuples of role
+    instructions
     """
     args = list(args) # Convert tuple to list
     args.reverse() # We really wanted head() here, but no matter...
