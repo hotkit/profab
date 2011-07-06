@@ -1,3 +1,6 @@
+2011-07-06  Kirit Saelensminde  <kirit@felspar.com>
+ Added support for associating an EIP to a server.
+
 2011-06-26  Kirit Saelensminde  <kirit@felspar.com>
  Made pip installable
  Added ChangeLog
