@@ -3,13 +3,14 @@ import fabric.network
 import logging
 import sys
 
-from profab.main import process_arguments
+from profab.ebs import Volume
 from profab.server import Server
 
 
-def main(client, *args):
+def main(client, hostname, size):
     logging.basicConfig(level=logging.INFO)
-    Server.start(client, *process_arguments(*args))
+    server = Server.connect(client, hostname)
+    volume = Volume.create(server, long(size))
 
 
 if __name__=="__main__":
@@ -17,4 +18,3 @@ if __name__=="__main__":
         main(*sys.argv[1:])
     finally:
         fabric.network.disconnect_all()
-

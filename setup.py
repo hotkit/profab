@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "profab",
-    version = "0.2",
+    version = "0.3",
     author = "Proteus Technologies Infrastructure team",
     author_email = "infrastructure@proteus-tech.com",
     description = ("Automated tools for engaging with server infrastructure on AWS"),

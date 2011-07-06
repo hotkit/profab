@@ -1,7 +1,11 @@
+# These are required by the runtime
 simplejson
 fabric
 git+git://github.com/boto/boto.git@2.0rc1
+
+# These are required for testing
 nose
 mock
 unittest2
 coverage
+pylint

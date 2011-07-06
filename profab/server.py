@@ -1,19 +1,29 @@
+"""This module handles the connection to the virtual machines running on EC2.
+"""
+from socket import getaddrinfo
 import time
 
-from fabric.api import settings, sudo, reboot
+from fabric.api import settings, sudo, reboot, run
+from fabric.contrib.files import append
 from fabric.state import connections
+from boto.ec2 import regions
 from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
+from profab.ebs import Volume
 
 
-def _on_this_server(fn):
+def _on_this_server(function):
+    """Private decorator to wrap methods which require fabric configuration.
+    """
     def wrapper(server, *args, **kwargs):
+        """Wrapped method
+        """
         keyfile = get_private_key_filename(server.config, server.cnx)
-        with settings(host_string=server.instance.dns_name, user='ubuntu',
-                key_filename=keyfile):
-            fn(server, *args, **kwargs)
+        with settings(host_string=server.eip or server.instance.dns_name,
+                user='ubuntu', key_filename=keyfile):
+            function(server, *args, **kwargs)
     return wrapper
 
 
@@ -29,25 +39,40 @@ class Server(object):
         """
         self.config = config
         self.cnx = cnx
+        self.eip = None
         self.instance = instance
 
 
+    def __str__(self):
+        return u"%s (%s) [%s] %s" % (
+            self.instance.dns_name, self.instance.key_name,
+            ', '.join([g.groupName for g in self.instance.groups]),
+            self.instance.tags)
+
+
     @classmethod
-    def start(kls, client, *roles, **conections):
+    def start(cls, client, *roles):
         """Start a server for the specified client with the given roles
         and connect the requested services.
+        
+        Roles are passed as either a name or a tuple (name, parameter).
         """
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
         cnx = EC2Connection(config.keys.api, config.keys.secret)
+
         image = cnx.get_all_images('ami-2cc83145')[0]
         reservation = image.run(instance_type='t1.micro',
             key_name=get_keyname(config, cnx),
             security_groups=['default'])
         _logger.debug("Have reservation %s for new server with instances %s",
             reservation, reservation.instances)
+
         server = Server(config, cnx, reservation.instances[0])
+        role_adders = server.get_role_adders(*roles)
+        _ = [role.started() for role in role_adders]
+
         while server.instance.state == 'pending':
             _logger.info("Waiting 10s for instance to start...")
             time.sleep(10)
@@ -56,11 +81,34 @@ class Server(object):
             " Waiting 30s for machine to boot.", server.instance.state,
             server.instance.dns_name)
         time.sleep(30)
+
         server.dist_upgrade()
+        server.add_roles(role_adders)
+
+        return server
 
 
     @classmethod
-    def connect(kls, client, hostname):
+    def get_all(cls, client):
+        """Connects to each region in turn and fetches all of the instances
+        currently running."""
+        servers = []
+        config = _Configuration(client)
+        region_list = regions(aws_access_key_id=config.keys.api,
+            aws_secret_access_key=config.keys.secret)
+        for region in region_list:
+            _logger.info("Searching %s", region)
+            cnx = region.connect(aws_access_key_id=config.keys.api,
+                aws_secret_access_key=config.keys.secret)
+            for reservation in cnx.get_all_instances():
+                _logger.info("Found %s", reservation)
+                for instance in reservation.instances:
+                    servers.append(Server(config, cnx, instance))
+        return servers
+
+
+    @classmethod
+    def connect(cls, client, hostname):
         """Connect to a given server by the provided hostname.
 
         If a matching server cannot be found then return None.
@@ -68,10 +116,13 @@ class Server(object):
         config = _Configuration(client)
         cnx = EC2Connection(config.keys.api, config.keys.secret)
         reservations = cnx.get_all_instances()
-        _logger.debug("Found  %s", reservations)
+        _logger.info("Reservations are  %s", reservations)
+        ips = set([sockaddr[0]
+            for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
         for reservation in reservations:
             instance = reservation.instances[0]
-            if instance.dns_name == hostname:
+            _logger.info("instance %s...", instance.dns_name)
+            if instance.ip_address in ips:
                 _logger.info("Found %s", instance)
                 return Server(config, cnx, instance)
         return None
@@ -79,36 +130,105 @@ class Server(object):
 
     @_on_this_server
     def reboot(self):
+        """Reboot this server.
+        """
         reboot(30)
         del connections[self.instance.dns_name]
+
+
+    def get_volumes(self):
+        """Return all of the volumes attached to this server.
+        """
+        volumes = []
+        all_volumes = self.cnx.get_all_volumes()
+        for volume in all_volumes:
+            if volume.attach_data.instance_id == self.instance.id:
+                found = Volume(self, volume, volume.attach_data.device,
+                    volume.attach_data.status == 'attached')
+                _logger.info("Found volume %s on %s",
+                    found.volume.id, found.device)
+                volumes.append(found)
+        return volumes
 
 
     @_on_this_server
     def install_packages(self, *packages):
         """Install the specified packages on the machine.
         """
+        # The decorator requires this to be an instance method
+        # pylint: disable=R0201
         package_names =  ' '.join(packages)
         _logger.info("Making sure the following packages are installed: %s",
             package_names)
-        sudo('apt-get install %s' % package_names)
+        sudo('apt-get install -y %s' % package_names)
 
 
     @_on_this_server
     def dist_upgrade(self):
         """Perform a dist-upgrade and make sure the base packages are installed.
         """
+        _logger.info("First ensure all keys are on server")
+        key_file = '~/.ssh/authorized_keys'
+        authorized_keys = run('cat %s' % key_file)
+        for key in self.config.ssh.ubuntu:
+            if key.split()[2] not in authorized_keys:
+                append(key_file, key)
         _logger.info("Starting dist-upgrade sequence for %s", self.instance)
         sudo('apt-get update')
         sudo('apt-get dist-upgrade -y')
         self.reboot()
-        self.install_packages('byobu')
+        self.install_packages('byobu', 'update-notifier-common')
+
+
+    def add_role(self, name, parameter=None):
+        """Add a single specific role to the server (with optional parameter).
+        """
+        adders = self.get_role_adders((name, parameter))
+        self.add_roles(adders)
+
+
+    @_on_this_server
+    def add_roles(self, role_adders):
+        """Adds a list of roles to the server.
+        """
+        for role_adder in role_adders:
+            self.install_packages(*role_adder.packages)
+            role_adder.configure()
 
 
     def terminate(self):
+        """Terminate the server waiting for it to shut down.
+        """
         self.instance.terminate()
         while self.instance.state != 'terminated':
             _logger.info("Wating 10s for instance to stop...")
             time.sleep(10)
             self.instance.update()
         _logger.info("Instance state now %s", self.instance.state)
+
+
+    def get_role_adders(self, *roles):
+        """Convert the arguments into a list of commands or options and values.
+        """
+        role_adders = []
+        for role_argument in roles:
+            if type(role_argument) == tuple:
+                role, parameter = role_argument
+            else:
+                role, parameter = role_argument, None
+            import_names = ['AddRole', 'Configure']
+            try:
+                module = __import__(role, globals(), locals(), import_names)
+            except ImportError:
+                try:
+                    module = __import__('profab.role.%s' % role, globals(),
+                        locals(), import_names)
+                except ImportError:
+                    raise ImportError("Could not import %s or profab.role.%s" %
+                        (role, role))
+            if parameter:
+                role_adders.append(module.Configure(self, parameter))
+            else:
+                role_adders.append(module.AddRole(self))
+        return role_adders
 

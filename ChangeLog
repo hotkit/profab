@@ -1,3 +1,15 @@
+2011-07-06  Kirit Saelensminde  <kirit@felspar.com>
+ Added support for associating an EIP to a server.
+
+2011-07-06  Kirit Saelensminde  <kirit@felspar.com>
+ Started to add in support for adding RAID arrays to a server. The RAID array building is not complete, but EBS volumes can be attached to servers.
+ Refactored the testing code.
+
+2011-07-01  Kirit Saelensminde  <kirit@felspar.com>
+ Implemented a plug in architecture for server roles and server configuration.
+ - Included postgres, munin (master and node) as initial roles.
+
 2011-06-26  Kirit Saelensminde  <kirit@felspar.com>
  Made pip installable
  Added ChangeLog
+ Added pf-server-list for listing all EC2 instances and their details

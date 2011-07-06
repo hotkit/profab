@@ -7,9 +7,11 @@ from profab.main import process_arguments
 from profab.server import Server
 
 
-def main(client, *args):
+def main(client, hostname, *roles):
     logging.basicConfig(level=logging.INFO)
-    Server.start(client, *process_arguments(*args))
+    server = Server.connect(client, hostname)
+    commands = server.get_role_adders(*process_arguments(*roles))
+    server.add_roles(commands)
 
 
 if __name__=="__main__":
@@ -17,4 +19,3 @@ if __name__=="__main__":
         main(*sys.argv[1:])
     finally:
         fabric.network.disconnect_all()
-

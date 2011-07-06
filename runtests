@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-nosetests --cover-erase --with-coverage --cover-tests \
-    --cover-package=profab
+COVER_OPTS="--cover-erase --with-coverage --cover-tests --cover-package=profab"
+
+nosetests $COVER_OPTS && pylint --rcfile=pylintrc --output-format=colorized profab
 
