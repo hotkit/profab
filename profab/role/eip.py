@@ -2,6 +2,7 @@
 started otherwise there might be connection problems during the
 session.
 """
+from profab import _logger
 from profab.role import Role
 
 
