@@ -68,6 +68,7 @@ class ServerLifecycle(TestCase):
     def test_connect_and_add_role(self):
         server = Server.connect('test', 'ec2-host')
         server.add_role('postgres')
+        server.add_role('eip', '10.43.56.9')
 
 
     @mock.patch('os.mkdir', lambda p: None)

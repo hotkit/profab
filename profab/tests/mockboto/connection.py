@@ -11,6 +11,9 @@ class MockConnection(object):
         self._key_pairs = []
         self._key_pairs_created = []
 
+    def associate_address(self, instance_id, ip):
+        pass
+
     def create_key_pair(self, host):
         self._key_pairs_created.append(host)
         key_pair = _Keys(name=host)
