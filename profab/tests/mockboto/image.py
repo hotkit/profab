@@ -4,7 +4,7 @@ from profab import _Keys
 class MockInstance(object):
     def __init__(self, state, next_state = 'running'):
         self.dns_name = 'ec2-host'
-        self.groups = [_Keys(groupName='default')]
+        self.groups = [_Keys(name='default')]
         self.id = 'i-test1'
         self.ip_address = '10.56.32.4'
         self.key_name = 'host'

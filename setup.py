@@ -6,7 +6,7 @@ def read(fname):
 
 setup(
     name = "profab",
-    version = "0.3.2",
+    version = "0.3.3",
     author = "Proteus Technologies Infrastructure team",
     author_email = "infrastructure@proteus-tech.com",
     description = ("Automated tools for engaging with server infrastructure on AWS"),
@@ -24,7 +24,7 @@ setup(
     scripts = [
         'bin/pf-server-list', 'bin/pf-server-role-add',
         'bin/pf-server-start', 'bin/pf-server-terminate', 'bin/pf-server-upgrade'],
-    install_requires = ['simplejson', 'fabric', 'boto >= 2.0rc1'],
+    install_requires = ['simplejson', 'fabric', 'boto >= 2.0'],
     dependency_links = [
         'git://github.com/boto/boto.git'],
 )
