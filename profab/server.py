@@ -46,7 +46,7 @@ class Server(object):
     def __str__(self):
         return u"%s (%s) [%s] %s" % (
             self.instance.dns_name, self.instance.key_name,
-            ', '.join([g.groupName for g in self.instance.groups]),
+            ', '.join([g.name for g in self.instance.groups]),
             self.instance.tags)
 
 
@@ -54,7 +54,7 @@ class Server(object):
     def start(cls, client, *roles):
         """Start a server for the specified client with the given roles
         and connect the requested services.
-        
+
         Roles are passed as either a name or a tuple (name, parameter).
         """
         config = _Configuration(client)
