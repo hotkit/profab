@@ -10,7 +10,7 @@ To install use:
 You will need to give profab EC2 API keys for each client in order for it to be able to manage EC2 infrastructure. I.e. for a client you wish to refer to as 'acme-widgets' use:
 
     mkdir -p ~/.profab/acme-widgets
-    $EDITOR ~/.profab/adme-widgets/ec2.json
+    $EDITOR ~/.profab/acme-widgets/ec2.json
 
 In the configuration file you will need a minimum of:
 
@@ -27,7 +27,7 @@ The first time you connect to an EC2 region to start a machine a new private/pub
 
 # Command line scripts #
 
-For all commands `client-name` is the same as the configuration folder used above.
+For all commands `client-name` is the same as the configuration folder used above, (acme-widgets)..
 
 
 ## pf-server-start ##

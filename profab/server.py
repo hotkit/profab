@@ -5,7 +5,6 @@ import time
 
 from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append
-from fabric.state import connections
 from boto.ec2 import regions
 from boto.ec2.connection import EC2Connection
 
@@ -132,8 +131,9 @@ class Server(object):
     def reboot(self):
         """Reboot this server.
         """
+        # The decorator requires this to be an instance method
+        # pylint: disable=R0201
         reboot(30)
-        del connections[self.instance.dns_name]
 
 
     def get_volumes(self):
