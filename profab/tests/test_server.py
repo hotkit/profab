@@ -24,14 +24,15 @@ class ServerLifecycle(TestCase):
 
 
     @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.role.smarthost.sudo', start_connection)
     @mock.patch('profab.server.EC2Connection', MockConnection)
     @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.reboot', start_connection)
     @mock.patch('profab.server.run', start_connection)
     @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
-    def test_start_with_role(self):
-        server = Server.start('test', 'postgres')
+    def test_start_with_roles(self):
+        server = Server.start('test', 'postgres', 'smarthost')
         self.assertEquals(str(server),
             u"ec2-host (host) [default] {}")
 
