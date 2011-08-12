@@ -5,7 +5,7 @@ from profab.tests.mockboto.image import MockInstance, MockImage, MockVolume
 
 
 class MockConnection(object):
-    def __init__(self, aws_access_key_id, aws_secret_access_key):
+    def __init__(self, aws_access_key_id, aws_secret_access_key, **kw):
         self._key = aws_access_key_id
         self._secret = aws_secret_access_key
         self._key_pairs = []

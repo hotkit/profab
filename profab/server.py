@@ -6,10 +6,10 @@ import time
 from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append
 from boto.ec2 import regions
-from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
+from profab.connection import ec2_connect
 from profab.ebs import Volume
 
 
@@ -59,7 +59,8 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
-        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        cnx = ec2_connect(config.keys.api, config.keys.secret,
+            region=config.region)
 
         image = cnx.get_all_images('ami-2cc83145')[0]
         reservation = image.run(instance_type='t1.micro',
@@ -113,7 +114,8 @@ class Server(object):
         If a matching server cannot be found then return None.
         """
         config = _Configuration(client)
-        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        cnx = ec2_connect(config.keys.api, config.keys.secret,
+            region=config.region)
         reservations = cnx.get_all_instances()
         _logger.info("Reservations are  %s", reservations)
         ips = set([sockaddr[0]
