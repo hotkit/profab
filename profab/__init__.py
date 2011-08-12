@@ -19,6 +19,7 @@ class _Configuration(object):
         # Set up the default configuration
         self.client = client
         self.host = 'ec2'
+        self.region = 'us-east-1'
         self.keys = _Keys(api = 'test-api-key',
             secret = 'test-api-secret')
         self.ssh = _Keys(ubuntu=[])
