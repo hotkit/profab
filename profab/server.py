@@ -59,8 +59,7 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
-        cnx = ec2_connect(config.keys.api, config.keys.secret,
-            region=config.region)
+        cnx = ec2_connect(config)
 
         image = cnx.get_all_images('ami-2cc83145')[0]
         reservation = image.run(instance_type='t1.micro',
@@ -114,8 +113,7 @@ class Server(object):
         If a matching server cannot be found then return None.
         """
         config = _Configuration(client)
-        cnx = ec2_connect(config.keys.api, config.keys.secret,
-            region=config.region)
+        cnx = ec2_connect(config)
         reservations = cnx.get_all_instances()
         _logger.info("Reservations are  %s", reservations)
         ips = set([sockaddr[0]
