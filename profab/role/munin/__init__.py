@@ -24,8 +24,8 @@ class AddRole(Role):
     """Adds the default Munin configuration.
     """
     packages = ['apache2', 'munin', 'munin-plugins-extra']
-    
-    def configure(self):
+
+    def configure(self, server):
         """Adds the Munin web site to Apache.
         """
         if exists("/etc/apache2/sites-enabled/000-default"):
@@ -50,11 +50,11 @@ class Configure(Role):
     """
     packages = [ 'munin-node', 'munin-plugins-extra']
 
-    def configure(self):
+    def configure(self, server):
         """Add the node configuration to the server, and the server
         configuration on the node.
         """
-        _logger.info("Configuring node %s", self.server)
+        _logger.info("Configuring node %s", server)
         put(_template(MUNIN_NODE_CONFIG), "/etc/munin/munin-node.conf",
             use_sudo=True)
         sudo("service munin-node restart")
@@ -62,7 +62,6 @@ class Configure(Role):
         with settings(host_string=self.parameter):
             _logger.info("Configuring server %s", self.parameter)
             put(_template(MUNIN_SERVER_CONFIG),
-                "/etc/munin/munin-conf.d/%s"
-                    "ec2-50-19-12-121.compute-1.amazonaws.com",
+                "/etc/munin/munin-conf.d/%s" % self.parameter,
                 use_sudo=True)
             run("sudo -u munin /usr/bin/munin-cron")
