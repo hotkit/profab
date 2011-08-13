@@ -15,4 +15,4 @@ class AddRole(Role):
             'eu-west-1': 'ami-52417126',
             'us-east-1': 'ami-2cc83145',
             'us-west-1' : 'ami-95c694d0',
-        }[region]
+        }.get(region, None)
