@@ -28,7 +28,7 @@ class MockConnection(object):
         return self._key_pairs
 
     def get_all_images(self, image):
-        return [MockImage()]
+        return [MockImage(image)]
 
     def get_all_volumes(self):
         return [MockVolume()]
