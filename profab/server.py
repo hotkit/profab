@@ -59,9 +59,16 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
-        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        roles = [('ami.lucid', None)] + list(roles)
 
-        image = cnx.get_all_images('ami-2cc83145')[0]
+        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        role_adders = Server.get_role_adders(*roles)
+
+        ami = None
+        for role_adder in role_adders:
+            ami = role_adder.ami() or ami
+
+        image = cnx.get_all_images(ami)[0]
         reservation = image.run(instance_type='t1.micro',
             key_name=get_keyname(config, cnx),
             security_groups=['default'])
@@ -69,8 +76,7 @@ class Server(object):
             reservation, reservation.instances)
 
         server = Server(config, cnx, reservation.instances[0])
-        role_adders = server.get_role_adders(*roles)
-        _ = [role.started() for role in role_adders]
+        _ = [role.started(server) for role in role_adders]
 
         while server.instance.state == 'pending':
             _logger.info("Waiting 10s for instance to start...")
@@ -193,7 +199,7 @@ class Server(object):
         """
         for role_adder in role_adders:
             self.install_packages(*role_adder.packages)
-            role_adder.configure()
+            role_adder.configure(self)
 
 
     def terminate(self):
@@ -207,7 +213,8 @@ class Server(object):
         _logger.info("Instance state now %s", self.instance.state)
 
 
-    def get_role_adders(self, *roles):
+    @classmethod
+    def get_role_adders(cls, *roles):
         """Convert the arguments into a list of commands or options and values.
         """
         role_adders = []
@@ -227,8 +234,8 @@ class Server(object):
                     raise ImportError("Could not import %s or profab.role.%s" %
                         (role, role))
             if parameter:
-                role_adders.append(module.Configure(self, parameter))
+                role_adders.append(module.Configure(parameter))
             else:
-                role_adders.append(module.AddRole(self))
+                role_adders.append(module.AddRole())
         return role_adders
 
