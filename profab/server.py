@@ -59,13 +59,14 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
+        roles = [('ami.lucid', None)] + list(roles)
+
         cnx = EC2Connection(config.keys.api, config.keys.secret)
         role_adders = Server.get_role_adders(*roles)
 
         ami = None
         for role_adder in role_adders:
             ami = role_adder.ami() or ami
-        ami = ami or 'ami-2cc83145'
 
         image = cnx.get_all_images(ami)[0]
         reservation = image.run(instance_type='t1.micro',
