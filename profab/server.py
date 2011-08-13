@@ -127,18 +127,15 @@ class Server(object):
 
         If a matching server cannot be found then return None.
         """
-        config = _Configuration(client)
-        cnx = ec2_connect(config)
-        reservations = cnx.get_all_instances()
-        _logger.info("Reservations are  %s", reservations)
+        servers = Server.get_all(client)
         ips = set([sockaddr[0]
             for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
-        for reservation in reservations:
-            instance = reservation.instances[0]
+        for server in servers:
+            instance = server.instance
             _logger.info("instance %s...", instance.dns_name)
             if instance.ip_address in ips:
                 _logger.info("Found %s", instance)
-                return Server(config, cnx, instance)
+                return server
         return None
 
 
