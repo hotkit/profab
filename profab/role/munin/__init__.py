@@ -62,7 +62,6 @@ class Configure(Role):
         with settings(host_string=self.parameter):
             _logger.info("Configuring server %s", self.parameter)
             put(_template(MUNIN_SERVER_CONFIG),
-                "/etc/munin/munin-conf.d/%s"
-                    "ec2-50-19-12-121.compute-1.amazonaws.com",
+                "/etc/munin/munin-conf.d/%s" % self.parameter,
                 use_sudo=True)
             run("sudo -u munin /usr/bin/munin-cron")
