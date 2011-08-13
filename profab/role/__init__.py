@@ -12,7 +12,14 @@ class Role(object):
         self.parameter = parameter
 
 
-    def ami(self):
+    def region(self):
+        """Called to determine the region to connect to when starting a new
+        instance.
+        """
+        pass
+
+
+    def ami(self, region):
         """Called to determine the AMI type to use when starting a new
         instance.
         """

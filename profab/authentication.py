@@ -19,7 +19,8 @@ def get_private_key_filename(config, cnx):
     """Fetch the key filename for this configuration and connection.
     """
     hostname = socket.gethostname()
-    foldername = os.path.expanduser('~/.profab/%s' % config.client)
+    foldername = os.path.expanduser('~/.profab/%s/%s' % (
+        config.client, cnx.region.name))
     pathname = '%s/%s.pem' % (foldername, hostname)
     if not os.access(foldername, os.F_OK):
         os.mkdir(foldername)

@@ -2,7 +2,8 @@ from profab import _Keys
 
 
 class MockInstance(object):
-    def __init__(self, state, next_state = 'running', image_id = 'ami-12345'):
+    def __init__(self, state, next_state='running',
+            image_id='ami-12345', cnx=None):
         self.dns_name = 'ec2-host'
         self.groups = [_Keys(name='default')]
         self.id = 'i-test1'
@@ -12,6 +13,9 @@ class MockInstance(object):
         self.placement = 'ec2-zone'
         self.state = state
         self.tags = {}
+
+        if cnx:
+            self.region = cnx.region
 
         self.__next_state = next_state
 
@@ -24,10 +28,12 @@ class MockInstance(object):
 
 
 class MockImage(object):
-    def __init__(self, name):
+    def __init__(self, cnx, name):
+        self._cnx = cnx
         self.id = name
     def run(self, instance_type, key_name, security_groups):
-        return _Keys(instances=[MockInstance('pending', image_id=self.id)])
+        return _Keys(instances=[MockInstance('pending', image_id=self.id,
+            cnx=self._cnx)])
 
 
 class MockVolume(object):
