@@ -9,7 +9,7 @@ from boto.ec2 import regions
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
-from profab.connection import ec2_connect
+from profab.connection import ec2_connect, DEFAULT_REGION
 from profab.ebs import Volume
 
 
@@ -60,14 +60,20 @@ class Server(object):
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
         roles = [('ami.lucid', None)] + list(roles)
-
-        cnx = ec2_connect(config)
         role_adders = Server.get_role_adders(*roles)
 
+        # Work out the correct region to use
+        region = config.region
+        for role_adder in role_adders:
+            region = role_adder.region() or region
+
+        # Find the AMI to use
         ami = None
         for role_adder in role_adders:
             ami = role_adder.ami() or ami
 
+        # Connect to the region and start the machine
+        cnx = ec2_connect(config, region)
         image = cnx.get_all_images(ami)[0]
         reservation = image.run(instance_type='t1.micro',
             key_name=get_keyname(config, cnx),
@@ -75,9 +81,11 @@ class Server(object):
         _logger.debug("Have reservation %s for new server with instances %s",
             reservation, reservation.instances)
 
+        # Now we can make the server instance and add the roles
         server = Server(config, cnx, reservation.instances[0])
         _ = [role.started(server) for role in role_adders]
 
+        # Wait for it to start up
         while server.instance.state == 'pending':
             _logger.info("Waiting 10s for instance to start...")
             time.sleep(10)
@@ -87,6 +95,7 @@ class Server(object):
             server.instance.dns_name)
         time.sleep(30)
 
+        # Upgrade it and configure it
         server.dist_upgrade()
         server.add_roles(role_adders)
 

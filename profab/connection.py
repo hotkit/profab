@@ -3,13 +3,16 @@
 from boto.ec2.connection import EC2Connection
 
 
-def ec2_connect(config):
+DEFAULT_REGION = 'us-east-1'
+
+
+def ec2_connect(config, region = DEFAULT_REGION):
     """Create and return a connection to an EC2 region.
     """
     bootstrap = EC2Connection(config.keys.api, config.keys.secret)
-    if config.region == 'us-east-1':
+    if region == DEFAULT_REGION:
         return bootstrap
     region_info = bootstrap.get_all_regions(
-        region_names=[config.region])[0]
+        region_names=[region])[0]
     return region_info.connect(aws_access_key_id=config.keys.api,
             aws_secret_access_key=config.keys.secret)
