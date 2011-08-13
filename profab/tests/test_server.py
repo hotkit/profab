@@ -58,8 +58,9 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
     def test_start_with_region(self):
-        server = Server.start('test', ('region', 'bangkok'))
+        server = Server.start('test', ('region', 'bangkok'), ('ami', 'test-ami'))
         self.assertEqual(server.instance.region.name, 'bangkok')
+        self.assertEqual(server.instance.image_id, 'test-ami')
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
@@ -80,6 +81,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
     @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.regions', regions)
     @mock.patch('profab.server.run', start_connection)
     @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
@@ -92,6 +94,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.regions', regions)
     @mock.patch('time.sleep', lambda s: None)
     def test_connect_and_terminate(self):
         server = Server.connect('test', 'ec2-host')
@@ -102,6 +105,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.regions', regions)
     @mock.patch('profab.server.sudo', start_connection)
     def test_connect_and_add_role(self):
         server = Server.connect('test', 'ec2-host')
@@ -117,6 +121,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.role.munin.sudo', start_connection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.regions', regions)
     @mock.patch('profab.server.sudo', start_connection)
     def test_connect_and_configure(self):
         server = Server.connect('test', 'ec2-host')
@@ -128,6 +133,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.5', p))])
+    @mock.patch('profab.server.regions', regions)
     def test_try_connect_to_invalid_host(self):
         server = Server.connect('test', 'not-a-host')
         self.assertIs(server, None)
@@ -136,6 +142,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.regions', regions)
     @mock.patch('time.sleep', lambda s: None)
     def test_server_role_not_found(self):
         server = Server.connect('test', 'ec2-host')

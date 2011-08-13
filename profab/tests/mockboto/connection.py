@@ -10,6 +10,7 @@ class MockConnection(object):
         self._secret = aws_secret_access_key
         self._key_pairs = []
         self._key_pairs_created = []
+        self.region = kw.get('region', Region('us-east-1'))
 
     def associate_address(self, instance_id, ip):
         pass
@@ -24,27 +25,33 @@ class MockConnection(object):
     def create_volume(self, size, zone):
         return MockVolume()
 
+    def get_all_instances(self):
+        return [_Keys(instances=[MockInstance(self, 'running')])]
+
+    def get_all_images(self, image):
+        return [MockImage(self, image)]
+
     def get_all_key_pairs(self):
         return self._key_pairs
 
-    def get_all_images(self, image):
-        return [MockImage(image)]
+    def get_all_regions(self, region_names, **kw):
+        return [Region(n) for n in region_names]
 
     def get_all_volumes(self):
         return [MockVolume()]
-
-    def get_all_instances(self):
-        return [_Keys(instances=[MockInstance('running')])]
 
     #def get_all_zones(self):
         #return [_Keys()]
 
 
 class Region(object):
+    def __init__(self, name):
+        self.name = name
+
     def connect(self, aws_access_key_id, aws_secret_access_key):
-        return MockConnection(aws_access_key_id, aws_secret_access_key)
+        return MockConnection(aws_access_key_id, aws_secret_access_key,
+            region=self)
 
 
 def regions(**kwargs):
-    cnx = MockConnection(**kwargs)
-    return [Region(), Region()]
+    return [Region('us-east-1'), Region('us-west-1')]
