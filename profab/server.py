@@ -70,7 +70,7 @@ class Server(object):
         # Find the AMI to use
         ami = None
         for role_adder in role_adders:
-            ami = role_adder.ami() or ami
+            ami = role_adder.ami(region) or ami
 
         # Connect to the region and start the machine
         cnx = ec2_connect(config, region)
