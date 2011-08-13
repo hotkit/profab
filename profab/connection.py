@@ -1,6 +1,5 @@
 """Make a connection to a region.
 """
-from boto.ec2 import get_region
 from boto.ec2.connection import EC2Connection
 
 
