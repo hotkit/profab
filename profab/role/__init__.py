@@ -8,19 +8,25 @@ class Role(object):
     # By default require no packages
     packages = []
 
-    def __init__(self, server, parameter = None):
-        self.server = server
+    def __init__(self, parameter = None):
         self.parameter = parameter
 
 
-    def started(self):
+    def ami(self):
+        """Called to determine the AMI type to use when starting a new
+        instance.
+        """
+        pass
+
+
+    def started(self, server):
         """Called just after the instance is started up, but before it has
         been confirmed that the instance is fully booted.
         """
         pass
 
 
-    def configure(self):
+    def configure(self, server):
         """Used to ensure that the role configuration is properly done.
         """
         pass

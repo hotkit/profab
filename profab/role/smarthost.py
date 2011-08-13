@@ -11,7 +11,7 @@ class AddRole(Role):
     """
     packages = ['exim4']
 
-    def configure(self):
+    def configure(self, server):
         """Re-configures exim4 to be a smart host.
         """
         sudo(
