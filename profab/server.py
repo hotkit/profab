@@ -9,7 +9,7 @@ from boto.ec2 import regions
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
-from profab.connection import ec2_connect, DEFAULT_REGION
+from profab.connection import ec2_connect
 from profab.ebs import Volume
 
 
