@@ -71,6 +71,19 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.run', start_connection)
     @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
+    def test_start_with_size(self):
+        server = Server.start('test', ('size', 'c1.xlarge'))
+        self.assertEqual(server.instance.instance_type, 'c1.xlarge')
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
     def test_start_lucid(self):
         server = Server.start('test', 'ami.lucid')
         self.assertEqual(server.instance.image_id, 'ami-2cc83145')

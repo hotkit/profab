@@ -67,6 +67,11 @@ class Server(object):
         for role_adder in role_adders:
             region = role_adder.region() or region
 
+        # Work out the machine size to launch
+        size = 't1.micro'
+        for role_adder in role_adders:
+            size = role_adder.size() or size
+
         # Find the AMI to use
         ami = None
         for role_adder in role_adders:
@@ -75,7 +80,7 @@ class Server(object):
         # Connect to the region and start the machine
         cnx = ec2_connect(config, region)
         image = cnx.get_all_images(ami)[0]
-        reservation = image.run(instance_type='t1.micro',
+        reservation = image.run(instance_type=size,
             key_name=get_keyname(config, cnx),
             security_groups=['default'])
         _logger.debug("Have reservation %s for new server with instances %s",
