@@ -35,9 +35,9 @@ Command line arguments are given as names after the script. For roles they come 
 
     pf-server-start client-name _roles_
 
-Starts a new server. Roles that control the region or AMI are only effective when an instance is started. Instances cannot be moved between regions and the AMI cannot be changed once launched.
+Starts a new server. Roles that control the region, size or AMI are only effective when an instance is started. Instances cannot be moved between regions, cannot be re-sized and the AMI cannot be changed once launched.
 
-If multiple roles set an AMI or region then the last one that does so controls which is actually used.
+If multiple roles set an AMI, instance size or region then the last one that does so controls which is actually used.
 
 ## pf-server-list ##
 
@@ -96,6 +96,14 @@ Installs the Postgres packages on the machine.
     --region region-name
 
 Allows the region that the instance is to be run in to be chosen. The default region is us-east-1 (Virginia).
+
+## size ##
+
+    --size size-code
+
+Sets the instance size to be launched to the requested size. Current valid size codes are: `m1.small`, `m1.large`, `m1.xlarge`, `c1.medium`, `c1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `t1.micro`.
+
+`t1.micro` is the default size to launch.
 
 ## smarthost ##
 
