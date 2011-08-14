@@ -6,10 +6,10 @@ import time
 from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append
 from boto.ec2 import regions
-from boto.ec2.connection import EC2Connection
 
 from profab import _Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
+from profab.connection import ec2_connect
 from profab.ebs import Volume
 
 
@@ -59,19 +59,44 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
-        cnx = EC2Connection(config.keys.api, config.keys.secret)
+        roles = [('ami.lucid', None), ('bits', None)] + list(roles)
+        role_adders = Server.get_role_adders(*roles)
 
-        image = cnx.get_all_images('ami-2cc83145')[0]
-        reservation = image.run(instance_type='t1.micro',
+        # Work out the correct region to use
+        region = config.region
+        for role_adder in role_adders:
+            region = role_adder.region() or region
+
+        # Work out the machine size to launch
+        size = 't1.micro'
+        for role_adder in role_adders:
+            size = role_adder.size() or size
+
+        # Calculate how bits the AMI should be using
+        bits = None
+        for role_adder in role_adders:
+            bits = role_adder.bits(size) or bits
+
+        # Find the AMI to use
+        ami = None
+        for role_adder in role_adders:
+            ami = role_adder.ami(region, bits, size) or ami
+
+        # Connect to the region and start the machine
+        cnx = ec2_connect(config, region)
+        image = cnx.get_all_images(ami)[0]
+        reservation = image.run(instance_type=size,
             key_name=get_keyname(config, cnx),
             security_groups=['default'])
         _logger.debug("Have reservation %s for new server with instances %s",
             reservation, reservation.instances)
 
+        # Now we can make the server instance and add the roles
         server = Server(config, cnx, reservation.instances[0])
-        role_adders = server.get_role_adders(*roles)
-        _ = [role.started() for role in role_adders]
+        for role in role_adders:
+            role.started(server)
 
+        # Wait for it to start up
         while server.instance.state == 'pending':
             _logger.info("Waiting 10s for instance to start...")
             time.sleep(10)
@@ -81,6 +106,7 @@ class Server(object):
             server.instance.dns_name)
         time.sleep(30)
 
+        # Upgrade it and configure it
         server.dist_upgrade()
         server.add_roles(role_adders)
 
@@ -112,18 +138,15 @@ class Server(object):
 
         If a matching server cannot be found then return None.
         """
-        config = _Configuration(client)
-        cnx = EC2Connection(config.keys.api, config.keys.secret)
-        reservations = cnx.get_all_instances()
-        _logger.info("Reservations are  %s", reservations)
+        servers = Server.get_all(client)
         ips = set([sockaddr[0]
             for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
-        for reservation in reservations:
-            instance = reservation.instances[0]
+        for server in servers:
+            instance = server.instance
             _logger.info("instance %s...", instance.dns_name)
             if instance.ip_address in ips:
                 _logger.info("Found %s", instance)
-                return Server(config, cnx, instance)
+                return server
         return None
 
 
@@ -193,7 +216,7 @@ class Server(object):
         """
         for role_adder in role_adders:
             self.install_packages(*role_adder.packages)
-            role_adder.configure()
+            role_adder.configure(self)
 
 
     def terminate(self):
@@ -207,7 +230,8 @@ class Server(object):
         _logger.info("Instance state now %s", self.instance.state)
 
 
-    def get_role_adders(self, *roles):
+    @classmethod
+    def get_role_adders(cls, *roles):
         """Convert the arguments into a list of commands or options and values.
         """
         role_adders = []
@@ -227,8 +251,8 @@ class Server(object):
                     raise ImportError("Could not import %s or profab.role.%s" %
                         (role, role))
             if parameter:
-                role_adders.append(module.Configure(self, parameter))
+                role_adders.append(module.Configure(parameter))
             else:
-                role_adders.append(module.AddRole(self))
+                role_adders.append(module.AddRole())
         return role_adders
 

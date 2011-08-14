@@ -10,7 +10,7 @@ from profab.tests.mockfabric.connections import start_connection
 
 
 class TestVolumes(TestCase):
-    @mock.patch('profab.server.EC2Connection', MockConnection)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.reboot', start_connection)
     @mock.patch('profab.server.run', start_connection)
