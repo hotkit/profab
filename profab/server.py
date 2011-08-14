@@ -59,7 +59,7 @@ class Server(object):
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
-        roles = [('ami.lucid', None)] + list(roles)
+        roles = [('ami.lucid', None), ('bits', None)] + list(roles)
         role_adders = Server.get_role_adders(*roles)
 
         # Work out the correct region to use
@@ -72,10 +72,15 @@ class Server(object):
         for role_adder in role_adders:
             size = role_adder.size() or size
 
+        # Calculate how bits the AMI should be using
+        bits = None
+        for role_adder in role_adders:
+            bits = role_adder.bits(size) or bits
+
         # Find the AMI to use
         ami = None
         for role_adder in role_adders:
-            ami = role_adder.ami(region) or ami
+            ami = role_adder.ami(region, bits, size) or ami
 
         # Connect to the region and start the machine
         cnx = ec2_connect(config, region)
@@ -88,7 +93,8 @@ class Server(object):
 
         # Now we can make the server instance and add the roles
         server = Server(config, cnx, reservation.instances[0])
-        _ = [role.started(server) for role in role_adders]
+        for role in role_adders:
+            role.started(server)
 
         # Wait for it to start up
         while server.instance.state == 'pending':

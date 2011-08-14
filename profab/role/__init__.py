@@ -25,7 +25,14 @@ class Role(object):
         pass
 
 
-    def ami(self, region):
+    def bits(self, size):
+        """Returns the number of bits that the AMI operating system should
+        match.
+        """
+        pass
+
+
+    def ami(self, region, bits, size):
         """Called to determine the AMI type to use when starting a new
         instance.
         """
