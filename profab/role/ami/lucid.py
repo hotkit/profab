@@ -19,13 +19,30 @@ AMIS = {
             'us-east-1': 'ami-81b275e8',
             'us-west-1' : 'ami-73c69436',
         }
+    },
+    '64': {
+        'ebs': {
+            'ap-northeast-1' : 'ami-34d36635',
+            'ap-southeast-1' : 'ami-4af18918',
+            'eu-west-1': 'ami-5c417128',
+            'us-east-1': 'ami-63be790a',
+            'us-west-1' : 'ami-97c694d2',
+        },
+        'instance': {
+            'ap-northeast-1' : 'ami-f0d065f1',
+            'ap-southeast-1' : 'ami-a6f088f4',
+            'eu-west-1': 'ami-844070f0',
+            'us-east-1': 'ami-fbbf7892',
+            'us-west-1' : 'ami-89c694cc',
+        }
     }
 }
 
 class AddRole(Role):
     """Returns the right Lucid AMI name.
     """
-    def ami(self, region):
+    def ami(self, region, bits, size):
         """Return the AMI that was passed in to the role.
         """
-        return AMIS['32']['instance'].get(region, None)
+        disk = 'ebs' if size == 't1.micro' else 'instance'
+        return AMIS[str(bits)][disk].get(region, None)

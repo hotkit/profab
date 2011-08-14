@@ -31,7 +31,7 @@ class Role(object):
         pass
 
 
-    def ami(self, region):
+    def ami(self, region, bits, size):
         """Called to determine the AMI type to use when starting a new
         instance.
         """
