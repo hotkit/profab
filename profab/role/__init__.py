@@ -26,7 +26,8 @@ class Role(object):
 
 
     def bits(self, size):
-        """Returns the number of bits that the AMI operating system should match.
+        """Returns the number of bits that the AMI operating system should
+        match.
         """
         pass
 
