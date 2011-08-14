@@ -93,7 +93,8 @@ class Server(object):
 
         # Now we can make the server instance and add the roles
         server = Server(config, cnx, reservation.instances[0])
-        _ = [role.started(server) for role in role_adders]
+        for role in role_adders:
+            role.started(server)
 
         # Wait for it to start up
         while server.instance.state == 'pending':
