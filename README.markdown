@@ -101,9 +101,9 @@ Allows the region that the instance is to be run in to be chosen. The default re
 
     --size size-code
 
-Sets the instance size to be launched to the requested size. Current valid size codes are: `m1.small`, `m1.large`, `m1.xlarge`, `c1.medium`, `c1.xlarge`, `m2.xlarge`, `m2.2xlarge`, `m2.4xlarge`, `t1.micro`.
+Sets the instance size to be launched to the requested size. Current valid sizes can be found at http://aws.amazon.com/ec2/instance-types/
 
-`t1.micro` is the default size to launch.
+Unlike the normal EC2 default, profab has a default size of `t1.micro`.
 
 ## smarthost ##
 
