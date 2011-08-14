@@ -1,4 +1,4 @@
-"""Plugins that allow the instance size to be chosen.
+"""Plugin that allows the instance size to be chosen.
 """
 from profab.role import Role
 
