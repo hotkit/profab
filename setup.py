@@ -20,7 +20,8 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "License :: OSI Approved :: Boost Software License - Version 1.0 - August 17th, 2003",
     ],
-    packages = ['profab', 'profab.role', 'profab.role.ami', 'profab.role.munin'],
+    packages = ['profab', 'profab.role',
+        'profab.role.ami', 'profab.role.size', 'profab.role.munin'],
     scripts = [
         'bin/pf-server-list', 'bin/pf-server-role-add',
         'bin/pf-server-start', 'bin/pf-server-terminate', 'bin/pf-server-upgrade'],
