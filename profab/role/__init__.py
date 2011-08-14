@@ -19,6 +19,12 @@ class Role(object):
         pass
 
 
+    def size(self):
+        """Called to determine the instance size to be started.
+        """
+        pass
+
+
     def ami(self, region):
         """Called to determine the AMI type to use when starting a new
         instance.
