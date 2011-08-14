@@ -69,6 +69,16 @@ Will choose an Ubuntu Lucid (10.04) AMI. This is the default AMI if no other one
 
 Instances are chosen from http://uec-images.ubuntu.com/releases/10.04/release/
 
+## bits ##
+
+    bits
+
+Automatically determines the number of bits that are to be used for a new server. This role is added automatically by profab, so there is no need to add it explicitly.
+
+    --bits 32|64
+
+Set the number of bits. profab will determine the correct number of bits for all current instance sizes automatically. You will need to use `--bits 64` to run a micro instance using a 64 bit operating system as profab will default to 32 bits.
+
 ## eip ##
 
     --eip ip-number
