@@ -180,10 +180,11 @@ class Server(object):
         """
         # The decorator requires this to be an instance method
         # pylint: disable=R0201
-        package_names =  ' '.join(packages)
-        _logger.info("Making sure the following packages are installed: %s",
-            package_names)
-        sudo('apt-get install -y %s' % package_names)
+        if packages:
+            package_names =  ' '.join(packages)
+            _logger.info("Making sure the following packages are installed: %s",
+                package_names)
+            sudo('apt-get install -y %s' % package_names)
 
 
     @_on_this_server
@@ -200,7 +201,8 @@ class Server(object):
         sudo('apt-get update')
         sudo('apt-get dist-upgrade -y')
         self.reboot()
-        self.install_packages('byobu', 'update-notifier-common')
+        self.install_packages('byobu', 'update-notifier-common',
+            'python-software-properties')
 
 
     def add_role(self, name, parameter=None):
