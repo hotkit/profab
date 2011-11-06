@@ -3,9 +3,10 @@ from profab import _Keys
 
 class MockInstance(object):
     def __init__(self, state, next_state='running',
-            instance_type='t1.micro', image_id='ami-12345', cnx=None):
+            instance_type='t1.micro', image_id='ami-12345', cnx=None,
+            groups=None):
         self.dns_name = 'ec2-host'
-        self.groups = [_Keys(name='default')]
+        self.groups = groups or [_Keys(name='default')]
         self.id = 'i-test1'
         self.ip_address = '10.56.32.4'
         self.image_id = image_id
@@ -33,9 +34,17 @@ class MockImage(object):
         self._cnx = cnx
         self.id = name
 
-    def run(self, instance_type, key_name, security_groups):
+    def run(self, _count=1, max_count=1, key_name=None, security_groups=[],
+            user_data=None, addressing_type=None, instance_type='m1.small',
+            placement=None, kernel_id=None, ramdisk_id=None,
+            monitoring_enabled=False, subnet_id=None, block_device_map=None,
+            disable_api_termination=False,
+            instance_initiated_shutdown_behavior=None,
+            private_ip_address=None, placement_group=None,
+            security_group_ids=None):
         return _Keys(instances=[MockInstance('pending',
             instance_type=instance_type, image_id=self.id,
+            groups=[_Keys(id=g, name=g) for g in security_groups],
             cnx=self._cnx)])
 
 

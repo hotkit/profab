@@ -56,21 +56,23 @@ class Server(object):
 
         Roles are passed as either a name or a tuple (name, parameter).
         """
-        run_args = {}
-
         config = _Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
         roles = [('ami.lucid', None), ('bits', None)] + list(roles)
         role_adders = Server.get_role_adders(*roles)
 
-        # Work out the correct region to use
+        # Work out the correct region to use and connect to it
         region = config.region
         for role_adder in role_adders:
             region = role_adder.region() or region
+        cnx = ec2_connect(config, region)
 
-        # Work out the machine size to launch
-        run_args['instance_type'] = 't1.micro'
+        # Work out the machine size to launch and set default run args
+        run_args = {
+                'key_name': get_keyname(config, cnx),
+                'instance_type': 't1.micro',
+            }
         for role_adder in role_adders:
             run_args['instance_type'] = role_adder.size() or \
                 run_args['instance_type']
@@ -85,13 +87,13 @@ class Server(object):
         for role_adder in role_adders:
             ami = role_adder.ami(region, bits, run_args['instance_type']) or ami
 
-        # Connect to the region and start the machine
-        cnx = ec2_connect(config, region)
+        # Work out the other run arguments we need
+        for role_adder in role_adders:
+            run_args = role_adder.run_kwargs(run_args)
+
+        # Start the machine
         image = cnx.get_all_images(ami)[0]
-        reservation = image.run(
-            key_name=get_keyname(config, cnx),
-            security_groups=['default'],
-            **run_args)
+        reservation = image.run(**run_args)
         _logger.debug("Have reservation %s for new server with instances %s",
             reservation, reservation.instances)
 
