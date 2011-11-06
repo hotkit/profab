@@ -64,7 +64,7 @@ If multiple roles set an AMI, instance size or region then the last one that doe
 Allows the AMI that is to be launched to be controlled. The AMI must be available in the region requested.
 
     ami.lucid
-    
+
 Will choose an Ubuntu Lucid (10.04) AMI. This is the default AMI if no other one is chosen.
 
 Instances are chosen from http://uec-images.ubuntu.com/releases/10.04/release/
@@ -106,6 +106,14 @@ Installs the Postgres packages on the machine.
     --region region-name
 
 Allows the region that the instance is to be run in to be chosen. The default region is us-east-1 (Virginia).
+
+## security_group ##
+
+    --security_group group-name
+
+Adds a new security group to the instance as it is launched. If no security groups are set then the server will get the default security group.
+
+This can be specified more than once in order to add more than one security group. It has no effect when used on a server instance that has already been started.
 
 ## size ##
 
