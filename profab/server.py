@@ -62,32 +62,38 @@ class Server(object):
         roles = [('ami.lucid', None), ('bits', None)] + list(roles)
         role_adders = Server.get_role_adders(*roles)
 
-        # Work out the correct region to use
+        # Work out the correct region to use and connect to it
         region = config.region
         for role_adder in role_adders:
             region = role_adder.region() or region
+        cnx = ec2_connect(config, region)
 
-        # Work out the machine size to launch
-        size = 't1.micro'
+        # Work out the machine size to launch and set default run args
+        run_args = {
+                'key_name': get_keyname(config, cnx),
+                'instance_type': 't1.micro',
+            }
         for role_adder in role_adders:
-            size = role_adder.size() or size
+            run_args['instance_type'] = role_adder.size() or \
+                run_args['instance_type']
 
-        # Calculate how bits the AMI should be using
+        # Calculate how many bits the AMI should be using
         bits = None
         for role_adder in role_adders:
-            bits = role_adder.bits(size) or bits
+            bits = role_adder.bits(run_args['instance_type']) or bits
 
         # Find the AMI to use
         ami = None
         for role_adder in role_adders:
-            ami = role_adder.ami(region, bits, size) or ami
+            ami = role_adder.ami(region, bits, run_args['instance_type']) or ami
 
-        # Connect to the region and start the machine
-        cnx = ec2_connect(config, region)
+        # Work out the other run arguments we need
+        for role_adder in role_adders:
+            run_args = role_adder.run_kwargs(run_args)
+
+        # Start the machine
         image = cnx.get_all_images(ami)[0]
-        reservation = image.run(instance_type=size,
-            key_name=get_keyname(config, cnx),
-            security_groups=['default'])
+        reservation = image.run(**run_args)
         _logger.debug("Have reservation %s for new server with instances %s",
             reservation, reservation.instances)
 

@@ -119,6 +119,33 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_security_group(self):
+        server = Server.start('kirit', ('security_group', 'web'))
+        self.assertItemsEqual([g.id for g in server.instance.groups], ['web'])
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_security_groups(self):
+        server = Server.start('kirit', ('security_group', 'web'), ('security_group', 'ssh'))
+        self.assertItemsEqual([g.id for g in server.instance.groups], ['web', 'ssh'])
+
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
     @mock.patch('profab.server.regions', regions)
