@@ -9,7 +9,7 @@ import os
 _logger = logging.getLogger('profab')
 
 
-class _Configuration(object):
+class Configuration(object):
     """Fetch a client configuration.
     """
 

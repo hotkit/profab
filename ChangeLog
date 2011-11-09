@@ -1,3 +1,9 @@
+2011-11-09  Kirit Saelensminde  <kirit@felspar.com>
+ The configuration loader is now part of the public API.
+
+2011-11-06  Kirit Saelensminde  <kirit@felspar.com>
+ Added ability to set the security groups for an instance.
+
 2011-08-14  Kirit Saelensminde  <kirit@felspar.com>
  Added the ability to choose the ami, the instance size and the region that an instance is to be started with.
  For micro instances we can choose between running a 32 or 64 bit AMI (32 is the default).

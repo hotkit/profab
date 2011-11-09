@@ -7,7 +7,7 @@ from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append
 from boto.ec2 import regions
 
-from profab import _Configuration, _logger
+from profab import Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
 from profab.connection import ec2_connect
 from profab.ebs import Volume
@@ -56,7 +56,7 @@ class Server(object):
 
         Roles are passed as either a name or a tuple (name, parameter).
         """
-        config = _Configuration(client)
+        config = Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
         roles = [('ami.lucid', None), ('bits', None)] + list(roles)
@@ -124,7 +124,7 @@ class Server(object):
         """Connects to each region in turn and fetches all of the instances
         currently running."""
         servers = []
-        config = _Configuration(client)
+        config = Configuration(client)
         region_list = regions(aws_access_key_id=config.keys.api,
             aws_secret_access_key=config.keys.secret)
         for region in region_list:

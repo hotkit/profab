@@ -1,7 +1,6 @@
 from unittest2 import TestCase
 import mock
 
-from profab import _Configuration
 from profab.ebs import Volume
 from profab.server import Server
 
