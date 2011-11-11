@@ -108,6 +108,19 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
     @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_start_oneiric(self):
+        server = Server.start('test', 'ami.oneiric')
+        self.assertEqual(server.instance.image_id, 'ami-0bcb0262')
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
     @mock.patch('profab.server.regions', regions)
     @mock.patch('profab.server.run', start_connection)
     @mock.patch('profab.server.sudo', start_connection)

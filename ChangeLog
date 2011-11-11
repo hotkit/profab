@@ -1,3 +1,6 @@
+2011-11-11  Kirit Saelensminde  <kirit@felspar.com>
+ Added support for Oneiric.
+
 2011-11-09  Kirit Saelensminde  <kirit@felspar.com>
  The configuration loader is now part of the public API.
 
