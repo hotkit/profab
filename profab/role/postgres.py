@@ -1,6 +1,7 @@
 """Sets up and configures Postgres on the machine
 """
 from fabric.api import run, sudo
+from fabric.contrib.files import sed
 
 from profab.role import Role
 
@@ -27,3 +28,6 @@ class AddRole(Role):
             run('createuser -l -S -D -I -R www-data')
             run('createdb -O www-data -E UTF-8 www-data')
 
+        sed('/etc/postgresql/8.4/main/pg_hba.conf',
+            '127.0.0.1/32', '127.0.0.1/16', use_sudo=True)
+        sudo('service postgresql restart')
