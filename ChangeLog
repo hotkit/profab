@@ -1,4 +1,5 @@
 2011-11-18  Kirit Saelensminde  <kirit@felspar.com>
+ Added support for Natty.
  The postgres role now adds in the ident authentication requirements for the ubuntu and www-data users.
 
 2011-11-11  Kirit Saelensminde  <kirit@felspar.com>
