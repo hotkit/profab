@@ -24,6 +24,8 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.postgres.run', start_connection)
+    @mock.patch('profab.role.postgres.sudo', start_connection)
     @mock.patch('profab.role.smarthost.sudo', start_connection)
     @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.reboot', start_connection)
@@ -170,6 +172,8 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.postgres.run', lambda s: start_connection() or '0 rows')
+    @mock.patch('profab.role.postgres.sudo', lambda s, user=None: start_connection() or '0 rows')
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
     @mock.patch('profab.server.regions', regions)

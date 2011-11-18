@@ -99,7 +99,7 @@ Configures the machine to be monitored by Munin at the specified server. Only ba
 
     postgres
 
-Installs the Postgres packages on the machine.
+Installs the Postgres packages on the machine. It also sets up Postgres users (roles and default databases) for the `ubuntu` and `www-data` users so they can both access the database using ident authentication.
 
 ## region ##
 
