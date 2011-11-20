@@ -3,9 +3,6 @@
 from profab.role.ami import ChooseAMI
 
 
-# This is all data, so is similar to the other release names
-# pylint: disable = R0801
-
 class AddRole(ChooseAMI):
     """Data for Natty AMIs.
     """

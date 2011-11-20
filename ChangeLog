@@ -1,3 +1,6 @@
+2011-11-20  Kirit Saelensminde  <kirit@felspar.com>
+ Added a WSGI role that sets up Apache2 ready for configuring a Python web site on the machine.
+
 2011-11-18  Kirit Saelensminde  <kirit@felspar.com>
  Added support for Natty.
  The postgres role now adds in the ident authentication requirements for the ubuntu and www-data users. It also allows authentication from the 127.0.0.1/16 local address network rather than just 127.0.0.1/32.
