@@ -24,6 +24,9 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.postgres.run', start_connection)
+    @mock.patch('profab.role.postgres.sed', lambda *a, **kw: None)
+    @mock.patch('profab.role.postgres.sudo', start_connection)
     @mock.patch('profab.role.smarthost.sudo', start_connection)
     @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.reboot', start_connection)
@@ -108,6 +111,32 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
     @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_start_natty(self):
+        server = Server.start('test', 'ami.natty')
+        self.assertEqual(server.instance.image_id, 'ami-639b530a')
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_start_oneiric(self):
+        server = Server.start('test', 'ami.oneiric')
+        self.assertEqual(server.instance.image_id, 'ami-0bcb0262')
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
     @mock.patch('profab.server.regions', regions)
     @mock.patch('profab.server.run', start_connection)
     @mock.patch('profab.server.sudo', start_connection)
@@ -115,6 +144,33 @@ class ServerLifecycle(TestCase):
     def test_connect_and_upgrade(self):
         server = Server.connect('test', 'ec2-host')
         server.dist_upgrade()
+
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_security_group(self):
+        server = Server.start('kirit', ('security_group', 'web'))
+        self.assertItemsEqual([g.id for g in server.instance.groups], ['web'])
+
+    @mock.patch('os.mkdir', lambda p: None)
+    @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.server.append', start_connection)
+    @mock.patch('profab.server.getaddrinfo', lambda h, p:
+            [(0, 0, 0, '', ('10.56.32.4', p))])
+    @mock.patch('profab.server.reboot', start_connection)
+    @mock.patch('profab.server.run', start_connection)
+    @mock.patch('profab.server.sudo', start_connection)
+    @mock.patch('time.sleep', lambda s: None)
+    def test_security_groups(self):
+        server = Server.start('kirit', ('security_group', 'web'), ('security_group', 'ssh'))
+        self.assertItemsEqual([g.id for g in server.instance.groups], ['web', 'ssh'])
 
 
     @mock.patch('os.mkdir', lambda p: None)
@@ -130,6 +186,11 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.postgres.run', lambda s: start_connection() or '0 rows')
+    @mock.patch('profab.role.postgres.sed', lambda *a, **kw: None)
+    @mock.patch('profab.role.postgres.sudo', lambda s, user=None: start_connection() or '0 rows')
+    @mock.patch('profab.role.wsgi.exists', lambda f: True)
+    @mock.patch('profab.role.wsgi.sudo', start_connection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
     @mock.patch('profab.server.regions', regions)
@@ -137,7 +198,7 @@ class ServerLifecycle(TestCase):
     def test_connect_and_add_role(self):
         server = Server.connect('test', 'ec2-host')
         server.add_role('postgres')
-        server.add_role('eip', '10.43.56.9')
+        server.add_role('wsgi')
 
 
     @mock.patch('os.mkdir', lambda p: None)
@@ -152,8 +213,8 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.sudo', start_connection)
     def test_connect_and_configure(self):
         server = Server.connect('test', 'ec2-host')
-        server.add_role('munin')
         server.add_role('munin', 'monitor.example.com')
+        server.add_role('eip', '10.43.56.9')
 
 
     @mock.patch('os.mkdir', lambda p: None)

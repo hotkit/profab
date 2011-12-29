@@ -39,6 +39,15 @@ class Role(object):
         pass
 
 
+    def run_kwargs(self, kwargs):
+        """Called to customise other parameters to the instance run command.
+        """
+        # This method can't be a function as sub-classes will want access
+        # to self
+        # pylint: disable = R0201
+        return kwargs
+
+
     def started(self, server):
         """Called just after the instance is started up, but before it has
         been confirmed that the instance is fully booted.
