@@ -18,7 +18,7 @@ setup(
         "Intended Audience :: DevOps",
         "Programming Language :: Python",
         "Topic :: Software Development :: Libraries :: Python Modules",
-        "License :: OSI Approved :: Boost Software License - Version 1.0 - August 17th, 2003",
+        "License :: OSI Approved",
     ],
     packages = ['profab', 'profab.role',
         'profab.role.ami', 'profab.role.munin'],
