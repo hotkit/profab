@@ -22,9 +22,9 @@ class AddRole(Role):
                 user='postgres')
             sudo('psql -c "create database ubuntu with owner=ubuntu"',
                 user='postgres')
-        pguser = run('''psql -c "select * from pg_user where '''
+        pguser = run('''psql -x -c "select * from pg_user where '''
             '''usename='www-data'"''')
-        if '0 rows' in pguser:
+        if 'No rows' in pguser:
             run('createuser -l -S -D -I -R www-data')
             run('createdb -O www-data -E UTF-8 www-data')
 

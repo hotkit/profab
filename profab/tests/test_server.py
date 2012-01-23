@@ -186,7 +186,7 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
-    @mock.patch('profab.role.postgres.run', lambda s: start_connection() or '0 rows')
+    @mock.patch('profab.role.postgres.run', lambda s: start_connection() or 'No rows')
     @mock.patch('profab.role.postgres.sed', lambda *a, **kw: None)
     @mock.patch('profab.role.postgres.sudo', lambda s, user=None: start_connection() or '0 rows')
     @mock.patch('profab.role.wsgi.exists', lambda f: True)
