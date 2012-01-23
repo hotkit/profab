@@ -1,3 +1,6 @@
+2011-11-20  Siraset Jirapatchandej  <siraset@proteus-tech.com>
+ Fixed a problem with some Postgres set ups hanging.
+
 2011-11-20  Kirit Saelensminde  <kirit@felspar.com>
  Added a WSGI role that sets up Apache2 ready for configuring a Python web site on the machine.
 
