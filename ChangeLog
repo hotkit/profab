@@ -1,3 +1,6 @@
+2012-01-31  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the way that the Postgres service is restarted to support more versions of the service configuration.
+
 2011-11-20  Siraset Jirapatchandej  <siraset@proteus-tech.com>
  Fixed a problem with some Postgres set ups hanging.
 

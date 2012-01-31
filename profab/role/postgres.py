@@ -30,4 +30,4 @@ class AddRole(Role):
 
         sed('/etc/postgresql/8.4/main/pg_hba.conf',
             '127.0.0.1/32', '127.0.0.1/16', use_sudo=True)
-        sudo('service postgresql restart')
+        sudo('`ls /etc/init.d/postgres*` restart')
