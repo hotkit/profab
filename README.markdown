@@ -2,7 +2,11 @@ Automated tools for engaging with server infrastructure on AWS.
 
 To install use:
 
-    pip install git+git://github.com/Proteus-tech/profab.git
+    pip install profab
+
+To use the latest development version install:
+
+    pip install git+git://github.com/Proteus-tech/profab.git@develop
 
 
 # Configuring profab #
@@ -139,7 +143,7 @@ Installs Apache and the WSGI module allowing it to host Python applications. In 
 
 # Doing development #
 
-_This project uses git flow. Don't forget to do `git flow init`_ (use defaults for all options).
+_This project uses git flow. Don't forget to do `git flow init -d`_ (use defaults for all options).
 
 You should run the devenv/paths script in order to set up your command line environment to be able to use profab straight from the check out.
 
