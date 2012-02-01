@@ -1,1 +1,2 @@
-include README.markdown
+include README.rst
+exclude README.markdown
