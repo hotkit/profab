@@ -1,3 +1,6 @@
+2012-02-01  Siraset Jirapatchandej  <siraset@proteus-tech.com>
+ The new version of Boto (2.2.0) doesn't install properly.
+
 2011-11-20  Siraset Jirapatchandej  <siraset@proteus-tech.com>
  Fixed a problem with some Postgres set ups hanging.
 
