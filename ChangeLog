@@ -1,3 +1,6 @@
+2012-02-01  Siraset Jirapatchandej  <siraset@proteus-tech.com>
+ The new version of Boto (2.2.0) doesn't install properly.
+
 2012-01-31  Kirit Saelensminde  <kirit@felspar.com>
  Changed the way that the Postgres service is restarted to support more versions of the service configuration.
 
