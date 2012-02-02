@@ -1,7 +1,11 @@
 import os
 from setuptools import setup
 
-def read(fname):
+def read(fname1, fname2):
+    if os.path.exists(fname1):
+        fname = fname1
+    else:
+        fname = fname2
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
@@ -11,7 +15,7 @@ setup(
     author_email = "infrastructure@proteus-tech.com",
     url = 'https://github.com/Proteus-tech/profab',
     description = ("Automated tools for engaging with server infrastructure on AWS"),
-    long_description = read('README.rst'),
+    long_description = read('README.rst','README.markdown'),
     license = "Boost Software License - Version 1.0 - August 17th, 2003",
     keywords = "devops ec2 fabric boto",
     classifiers = [

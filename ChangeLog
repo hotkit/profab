@@ -1,3 +1,6 @@
+2012-02-02  Kirit Saelensminde  <kirit@felspar.com>
+ Made some changes to the setup.py and created a publish script so that pypi will see an RST version of the README, but I can continue to author the markdown version.
+
 2012-02-01  Siraset Jirapatchandej  <siraset@proteus-tech.com>
  The new version of Boto (2.2.0) doesn't install properly.
 
