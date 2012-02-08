@@ -109,6 +109,7 @@ class Server(object):
             server.instance.update()
         _logger.info("Instance state now %s with name %s.",
             server.instance.state, server.instance.dns_name)
+        time.sleep(30)
 
         # Upgrade it and configure it
         server.dist_upgrade()
@@ -160,7 +161,7 @@ class Server(object):
         """
         # The decorator requires this to be an instance method
         # pylint: disable=R0201
-        reboot()
+        reboot(120)
 
 
     def get_volumes(self):
