@@ -10,7 +10,7 @@ def read(fname1, fname2):
 
 setup(
     name = "profab",
-    version = "0.4.3.2",
+    version = "0.4.3.3",
     author = "Proteus Technologies Infrastructure team",
     author_email = "infrastructure@proteus-tech.com",
     url = 'https://github.com/Proteus-tech/profab',
@@ -30,5 +30,5 @@ setup(
     scripts = [
         'bin/pf-server-list', 'bin/pf-server-role-add',
         'bin/pf-server-start', 'bin/pf-server-terminate', 'bin/pf-server-upgrade'],
-    install_requires = ['simplejson', 'fabric >= 1.2.0', 'boto >= 2.0,!=2.2.0'],
+    install_requires = ['simplejson', 'fabric > 1.3.4', 'boto >= 2.0,!=2.2.0'],
 )
