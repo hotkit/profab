@@ -21,7 +21,7 @@ def _on_this_server(function):
         """
         keyfile = get_private_key_filename(server.config, server.cnx)
         with settings(host_string=server.eip or server.instance.dns_name,
-                user='ubuntu', key_filename=keyfile):
+                user='ubuntu', key_filename=keyfile, connection_attempts=10):
             function(server, *args, **kwargs)
     return wrapper
 
@@ -107,10 +107,8 @@ class Server(object):
             _logger.info("Waiting 10s for instance to start...")
             time.sleep(10)
             server.instance.update()
-        _logger.info("Instance state now %s with name %s."
-            " Waiting 30s for machine to boot.", server.instance.state,
-            server.instance.dns_name)
-        time.sleep(30)
+        _logger.info("Instance state now %s with name %s.",
+            server.instance.state, server.instance.dns_name)
 
         # Upgrade it and configure it
         server.dist_upgrade()
@@ -162,7 +160,7 @@ class Server(object):
         """
         # The decorator requires this to be an instance method
         # pylint: disable=R0201
-        reboot(30)
+        reboot()
 
 
     def get_volumes(self):

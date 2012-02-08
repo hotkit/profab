@@ -1,5 +1,14 @@
+2012-02-08  Kirit Saelensminde  <kirit@felspar.com>
+ The latest version of Fabric will allow us to handle the boot wait time out and the reboot time out far more gracefully and reliably.
+
+2012-02-02  Kirit Saelensminde  <kirit@felspar.com>
+ Made some changes to the setup.py and created a publish script so that pypi will see an RST version of the README, but I can continue to author the markdown version.
+
 2012-02-01  Siraset Jirapatchandej  <siraset@proteus-tech.com>
  The new version of Boto (2.2.0) doesn't install properly.
+
+2012-01-31  Kirit Saelensminde  <kirit@felspar.com>
+ Changed the way that the Postgres service is restarted to support more versions of the service configuration.
 
 2011-11-20  Siraset Jirapatchandej  <siraset@proteus-tech.com>
  Fixed a problem with some Postgres set ups hanging.

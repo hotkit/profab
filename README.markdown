@@ -2,7 +2,17 @@ Automated tools for engaging with server infrastructure on AWS.
 
 To install use:
 
-    pip install git+git://github.com/Proteus-tech/profab.git
+    pip install profab
+
+To use the latest development version install:
+
+    pip install git+git://github.com/Proteus-tech/profab.git@develop
+
+Note that in order to make connections to new machines and reboots reliable the latest version of Fabric is needed.
+
+    pip install git+git://github.com/fabric/fabric.git
+
+You will need to do this *before* installing Profab.
 
 
 # Configuring profab #
@@ -130,9 +140,16 @@ Unlike the normal EC2 default, profab has a default size of `t1.micro`.
 Installs and configures exim to relay email for the machine. Emails are sent to recipients directly from the machine. The machine will only relay for mail sent from the local host.
 
 
+## wsgi ##
+
+    wsgi
+
+Installs Apache and the WSGI module allowing it to host Python applications. In installing Apache it disables the default website and ensures that the `www-data` user has a proper home directory.
+
+
 # Doing development #
 
-_This project uses git flow. Don't forget to do `git flow init`_ (use defaults for all options).
+_This project uses git flow. Don't forget to do `git flow init -d`_ (use defaults for all options).
 
 You should run the devenv/paths script in order to set up your command line environment to be able to use profab straight from the check out.
 
