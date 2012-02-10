@@ -1,6 +1,6 @@
 """This module handles the connection to the virtual machines running on EC2.
 """
-from socket import getaddrinfo
+from socket import gaierror, getaddrinfo
 import time
 
 from fabric.api import settings, sudo, reboot, run
@@ -139,12 +139,16 @@ class Server(object):
         If a matching server cannot be found then return None.
         """
         servers = Server.get_all(client)
-        ips = set([sockaddr[0]
-            for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
+        try:
+            ips = set([sockaddr[0]
+                for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
+        except gaierror:
+            ips = set()
         for server in servers:
             instance = server.instance
             _logger.info("instance %s...", instance.dns_name)
-            if instance.ip_address in ips:
+            if instance.ip_address in ips or \
+                    server.reservation.id == hostname:
                 _logger.info("Found %s", instance)
                 return server
         return None
