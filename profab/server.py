@@ -31,7 +31,7 @@ class Server(object):
     use one of the methods `start` or `connect`.
     """
 
-    def __init__(self, config, cnx, instance):
+    def __init__(self, config, cnx, instance, reservation):
         """The constructor is called by either `start` or `connect`.
 
         DO NOT CALL DIRECTLY.
@@ -40,11 +40,13 @@ class Server(object):
         self.cnx = cnx
         self.eip = None
         self.instance = instance
+        self.reservation = reservation
 
 
     def __str__(self):
         return u"%s (%s) [%s] %s" % (
-            self.instance.dns_name, self.instance.key_name,
+            self.instance.dns_name or self.reservation,
+            self.instance.key_name,
             ', '.join([g.name for g in self.instance.groups]),
             self.instance.tags)
 
@@ -133,7 +135,7 @@ class Server(object):
             for reservation in cnx.get_all_instances():
                 _logger.info("Found %s", reservation)
                 for instance in reservation.instances:
-                    servers.append(Server(config, cnx, instance))
+                    servers.append(Server(config, cnx, instance, reservation))
         return servers
 
 
