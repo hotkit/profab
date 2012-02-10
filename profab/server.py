@@ -5,12 +5,12 @@ import time
 
 from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append
-from boto.ec2 import regions
 
 from profab import Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
 from profab.connection import ec2_connect
 from profab.ebs import Volume
+from profab.ec2 import get_all_reservations
 
 
 def _on_this_server(function):
@@ -31,22 +31,22 @@ class Server(object):
     use one of the methods `start` or `connect`.
     """
 
-    def __init__(self, config, cnx, instance, reservation):
+    def __init__(self, config, reservation, instance):
         """The constructor is called by either `start` or `connect`.
 
         DO NOT CALL DIRECTLY.
         """
         self.config = config
-        self.cnx = cnx
+        self.cnx = reservation.connection
         self.eip = None
         self.instance = instance
         self.reservation = reservation
 
 
     def __str__(self):
-        return u"%s (%s) [%s] %s" % (
-            self.instance.dns_name or self.reservation,
-            self.instance.key_name,
+        return u"%s -- %s (%s) [%s] %s" % (
+            self.instance.dns_name or self.reservation.id,
+            self.instance.state, self.instance.key_name,
             ', '.join([g.name for g in self.instance.groups]),
             self.instance.tags)
 
@@ -126,16 +126,9 @@ class Server(object):
         currently running."""
         servers = []
         config = Configuration(client)
-        region_list = regions(aws_access_key_id=config.keys.api,
-            aws_secret_access_key=config.keys.secret)
-        for region in region_list:
-            _logger.info("Searching %s", region)
-            cnx = region.connect(aws_access_key_id=config.keys.api,
-                aws_secret_access_key=config.keys.secret)
-            for reservation in cnx.get_all_instances():
-                _logger.info("Found %s", reservation)
-                for instance in reservation.instances:
-                    servers.append(Server(config, cnx, instance, reservation))
+        for reservation in get_all_reservations(config):
+            for instance in reservation.instances:
+                servers.append(Server(config, reservation, instance))
         return servers
 
 
