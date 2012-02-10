@@ -226,12 +226,23 @@ class Server(object):
             role_adder.configure(self)
 
 
+    def stop(self):
+        """Stop the server, but do not terminate it.
+        """
+        self.instance.stop()
+        while self.instance.state != 'stopped':
+            _logger.info("Wating 10s for instance to stop...")
+            time.sleep(10)
+            self.instance.update()
+        _logger.info("Instance state now %s", self.instance.state)
+
+
     def terminate(self):
         """Terminate the server waiting for it to shut down.
         """
         self.instance.terminate()
         while self.instance.state != 'terminated':
-            _logger.info("Wating 10s for instance to stop...")
+            _logger.info("Wating 10s for instance to terminate...")
             time.sleep(10)
             self.instance.update()
         _logger.info("Instance state now %s", self.instance.state)
