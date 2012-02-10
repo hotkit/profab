@@ -57,6 +57,10 @@ If multiple roles set an AMI, instance size or region then the last one that doe
 
     pf-server-role-add client-name hostname _roles_
 
+## pf-server-stop ##
+
+    pf-server-stop client-name hostname
+
 ## pf-server-update ##
 
     pf-server-update client-name hostname
