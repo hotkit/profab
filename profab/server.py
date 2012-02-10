@@ -100,7 +100,7 @@ class Server(object):
             reservation, reservation.instances)
 
         # Now we can make the server instance and add the roles
-        server = Server(config, cnx, reservation.instances[0])
+        server = Server(config, reservation, reservation.instances[0])
         for role in role_adders:
             role.started(server)
 
