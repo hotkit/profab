@@ -1,3 +1,6 @@
+2012-02-11  Kirit Saelensminde  <kirit@felspar.com>
+ Implemented server stopping and restarting.
+
 2012-02-08  Kirit Saelensminde  <kirit@felspar.com>
  The latest version of Fabric will allow us to handle the boot wait time out and the reboot time out far more gracefully and reliably.
 

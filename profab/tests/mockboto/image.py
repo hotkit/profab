@@ -25,6 +25,10 @@ class MockInstance(object):
     def update(self):
         self.state = self.__next_state
 
+    def start(self):
+        self.__next_state = 'running'
+    def stop(self):
+        self.__next_state = 'stopped'
     def terminate(self):
         self.__next_state = 'terminated'
 
@@ -42,10 +46,12 @@ class MockImage(object):
             instance_initiated_shutdown_behavior=None,
             private_ip_address=None, placement_group=None,
             security_group_ids=None):
-        return _Keys(instances=[MockInstance('pending',
-            instance_type=instance_type, image_id=self.id,
-            groups=[_Keys(id=g, name=g) for g in security_groups],
-            cnx=self._cnx)])
+        return _Keys(id='r-reservation',
+            connection=self._cnx,
+            instances=[MockInstance('pending',
+                instance_type=instance_type, image_id=self.id,
+                groups=[_Keys(id=g, name=g) for g in security_groups],
+                cnx=self._cnx)])
 
 
 class MockVolume(object):
