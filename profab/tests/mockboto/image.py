@@ -25,6 +25,10 @@ class MockInstance(object):
     def update(self):
         self.state = self.__next_state
 
+    def start(self):
+        self.__next_state = 'running'
+    def stop(self):
+        self.__next_state = 'stopped'
     def terminate(self):
         self.__next_state = 'terminated'
 
