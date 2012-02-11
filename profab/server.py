@@ -236,6 +236,17 @@ class Server(object):
         _logger.info("Instance state now %s", self.instance.state)
 
 
+    def restart(self):
+        """Ask the server instance to restart from a stopped state.
+        """
+        self.instance.start()
+        while self.instance.state != 'running':
+            _logger.info("Wating 10s for instance to restart...")
+            time.sleep(10)
+            self.instance.update()
+        _logger.info("Instance state now %s", self.instance.state)
+
+
     def terminate(self):
         """Terminate the server waiting for it to shut down.
         """
