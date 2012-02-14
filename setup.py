@@ -30,5 +30,5 @@ setup(
     scripts = [
         'bin/pf-server-list', 'bin/pf-server-role-add',
         'bin/pf-server-start', 'bin/pf-server-terminate', 'bin/pf-server-upgrade'],
-    install_requires = ['simplejson', 'fabric >=1.3.4', 'boto >= 2.0,!=2.2.0'],
+    install_requires = ['simplejson', 'fabric >=1.4', 'boto >=2.0,!=2.2.0'],
 )
