@@ -17,7 +17,7 @@ setup(
     description = ("Automated tools for engaging with server infrastructure on AWS"),
     long_description = read('README','README.markdown'),
     license = "Boost Software License - Version 1.0 - August 17th, 2003",
-    keywords = "devops ec2 fabric boto",
+    keywords = "devops ec2 fabric boto ubuntu",
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
