@@ -17,7 +17,7 @@ setup(
     description = ("Automated tools for engaging with server infrastructure on AWS"),
     long_description = read('README','README.markdown'),
     license = "Boost Software License - Version 1.0 - August 17th, 2003",
-    keywords = "devops ec2 fabric boto",
+    keywords = "devops ec2 fabric boto ubuntu",
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
@@ -30,5 +30,5 @@ setup(
     scripts = [
         'bin/pf-server-list', 'bin/pf-server-role-add',
         'bin/pf-server-start', 'bin/pf-server-terminate', 'bin/pf-server-upgrade'],
-    install_requires = ['simplejson', 'fabric >=1.3.4', 'boto >= 2.0,!=2.2.0'],
+    install_requires = ['simplejson', 'fabric >=1.4', 'boto >=2.0,!=2.2.0'],
 )
