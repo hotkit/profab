@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd `dirname $0`
 
-source virtualenvwrapper.sh
+source /usr/local/bin/virtualenvwrapper.sh
 
 function check_worked {
     if ! $*
@@ -10,6 +10,6 @@ function check_worked {
     fi
 }
 
-pandoc -f markdown -t rst README.markdown > README.rst
+pandoc -f markdown -t rst README.markdown > README
 check_worked python setup.py sdist upload
 rm -r dist profab.egg-info README.rst

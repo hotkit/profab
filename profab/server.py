@@ -1,16 +1,16 @@
 """This module handles the connection to the virtual machines running on EC2.
 """
-from socket import getaddrinfo
+from socket import gaierror, getaddrinfo
 import time
 
 from fabric.api import settings, sudo, reboot, run
 from fabric.contrib.files import append
-from boto.ec2 import regions
 
 from profab import Configuration, _logger
 from profab.authentication import get_keyname, get_private_key_filename
 from profab.connection import ec2_connect
 from profab.ebs import Volume
+from profab.ec2 import get_all_reservations
 
 
 def _on_this_server(function):
@@ -31,20 +31,22 @@ class Server(object):
     use one of the methods `start` or `connect`.
     """
 
-    def __init__(self, config, cnx, instance):
+    def __init__(self, config, reservation, instance):
         """The constructor is called by either `start` or `connect`.
 
         DO NOT CALL DIRECTLY.
         """
         self.config = config
-        self.cnx = cnx
+        self.cnx = reservation.connection
         self.eip = None
         self.instance = instance
+        self.reservation = reservation
 
 
     def __str__(self):
-        return u"%s (%s) [%s] %s" % (
-            self.instance.dns_name, self.instance.key_name,
+        return u"%s -- %s (%s) [%s] %s" % (
+            self.instance.dns_name or self.reservation.id,
+            self.instance.state, self.instance.key_name,
             ', '.join([g.name for g in self.instance.groups]),
             self.instance.tags)
 
@@ -98,7 +100,7 @@ class Server(object):
             reservation, reservation.instances)
 
         # Now we can make the server instance and add the roles
-        server = Server(config, cnx, reservation.instances[0])
+        server = Server(config, reservation, reservation.instances[0])
         for role in role_adders:
             role.started(server)
 
@@ -124,16 +126,9 @@ class Server(object):
         currently running."""
         servers = []
         config = Configuration(client)
-        region_list = regions(aws_access_key_id=config.keys.api,
-            aws_secret_access_key=config.keys.secret)
-        for region in region_list:
-            _logger.info("Searching %s", region)
-            cnx = region.connect(aws_access_key_id=config.keys.api,
-                aws_secret_access_key=config.keys.secret)
-            for reservation in cnx.get_all_instances():
-                _logger.info("Found %s", reservation)
-                for instance in reservation.instances:
-                    servers.append(Server(config, cnx, instance))
+        for reservation in get_all_reservations(config):
+            for instance in reservation.instances:
+                servers.append(Server(config, reservation, instance))
         return servers
 
 
@@ -144,12 +139,16 @@ class Server(object):
         If a matching server cannot be found then return None.
         """
         servers = Server.get_all(client)
-        ips = set([sockaddr[0]
-            for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
+        try:
+            ips = set([sockaddr[0]
+                for (_, _, _, _, sockaddr) in getaddrinfo(hostname, 22)])
+        except gaierror:
+            ips = set()
         for server in servers:
             instance = server.instance
             _logger.info("instance %s...", instance.dns_name)
-            if instance.ip_address in ips:
+            if instance.ip_address in ips or \
+                    server.reservation.id == hostname:
                 _logger.info("Found %s", instance)
                 return server
         return None
@@ -226,12 +225,34 @@ class Server(object):
             role_adder.configure(self)
 
 
+    def stop(self):
+        """Stop the server, but do not terminate it.
+        """
+        self.instance.stop()
+        while self.instance.state != 'stopped':
+            _logger.info("Wating 10s for instance to stop...")
+            time.sleep(10)
+            self.instance.update()
+        _logger.info("Instance state now %s", self.instance.state)
+
+
+    def restart(self):
+        """Ask the server instance to restart from a stopped state.
+        """
+        self.instance.start()
+        while self.instance.state != 'running':
+            _logger.info("Wating 10s for instance to restart...")
+            time.sleep(10)
+            self.instance.update()
+        _logger.info("Instance state now %s", self.instance.state)
+
+
     def terminate(self):
         """Terminate the server waiting for it to shut down.
         """
         self.instance.terminate()
         while self.instance.state != 'terminated':
-            _logger.info("Wating 10s for instance to stop...")
+            _logger.info("Wating 10s for instance to terminate...")
             time.sleep(10)
             self.instance.update()
         _logger.info("Instance state now %s", self.instance.state)

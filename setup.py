@@ -10,12 +10,12 @@ def read(fname1, fname2):
 
 setup(
     name = "profab",
-    version = "0.4.5",
+    version = "0.4.6",
     author = "Proteus Technologies Infrastructure team",
     author_email = "infrastructure@proteus-tech.com",
     url = 'https://github.com/Proteus-tech/profab',
     description = ("Automated tools for engaging with server infrastructure on AWS"),
-    long_description = read('README.rst','README.markdown'),
+    long_description = read('README','README.markdown'),
     license = "Boost Software License - Version 1.0 - August 17th, 2003",
     keywords = "devops ec2 fabric boto",
     classifiers = [
