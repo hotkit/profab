@@ -18,7 +18,7 @@ def get_all_reservations(config):
             aws_secret_access_key=config.keys.secret)
         for reservation in cnx.get_all_instances():
             _logger.info("Found %s %s", reservation,
-                [i.id for i in reservation.instances])
+                [str(i.id) for i in reservation.instances])
             reservations.append(reservation)
     return reservations
 
