@@ -111,7 +111,6 @@ class Server(object):
             server.instance.update()
         _logger.info("Instance state now %s with name %s.",
             server.instance.state, server.instance.dns_name)
-        time.sleep(30)
 
         # Upgrade it and configure it
         server.dist_upgrade()
