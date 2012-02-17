@@ -33,6 +33,8 @@ The first time you connect to an EC2 region to start a machine a new private/pub
 
 For all commands `client-name` is the same as the configuration folder used above, (acme-widgets)..
 
+Commands that take host names can also be given an EC2 reservation. These look like `r-adf3243234`.
+
 Command line arguments are given as names after the script. For roles they come in two types: either with or without a parameter. This is either as `role` or `--role parameter`. Roles are processed in the order specified.
 
 ## pf-server-start ##
