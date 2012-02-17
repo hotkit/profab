@@ -8,12 +8,6 @@ To use the latest development version install:
 
     pip install git+git://github.com/Proteus-tech/profab.git@develop
 
-Note that in order to make connections to new machines and reboots reliable the latest version of Fabric is needed.
-
-    pip install git+git://github.com/fabric/fabric.git
-
-You will need to do this *before* installing Profab.
-
 
 # Configuring profab #
 
