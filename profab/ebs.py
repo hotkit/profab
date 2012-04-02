@@ -27,7 +27,7 @@ class Volume(object):
         devices = [d for d in cls.DEVICES if d not in used]
         _logger.info("Unused devices on this server are %s", devices)
         device = devices[0]
-        volume = Volume(server, server.cnx.create_volume(
+        volume = cls(server, server.cnx.create_volume(
             size, server.instance.placement), device)
         _logger.info("Attaching volume %s to %s as %s",
             volume.volume, server.instance, device)

@@ -13,8 +13,8 @@ from profab.ebs import Volume
 from profab.ec2 import get_all_reservations
 
 
-def _on_this_server(function):
-    """Private decorator to wrap methods which require fabric configuration.
+def on_this_server(function):
+    """Decorator to wrap methods which require fabric configuration.
     """
     def wrapper(server, *args, **kwargs):
         """Wrapped method
@@ -62,7 +62,7 @@ class Server(object):
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
         roles = [('ami.lucid', None), ('bits', None)] + list(roles)
-        role_adders = Server.get_role_adders(*roles)
+        role_adders = cls.get_role_adders(*roles)
 
         # Work out the correct region to use and connect to it
         region = config.region
@@ -100,7 +100,7 @@ class Server(object):
             reservation, reservation.instances)
 
         # Now we can make the server instance and add the roles
-        server = Server(config, reservation, reservation.instances[0])
+        server = cls(config, reservation, reservation.instances[0])
         for role in role_adders:
             role.started(server)
 
@@ -153,7 +153,7 @@ class Server(object):
         return None
 
 
-    @_on_this_server
+    @on_this_server
     def reboot(self):
         """Reboot this server.
         """
@@ -177,7 +177,7 @@ class Server(object):
         return volumes
 
 
-    @_on_this_server
+    @on_this_server
     def install_packages(self, *packages):
         """Install the specified packages on the machine.
         """
@@ -190,7 +190,7 @@ class Server(object):
             sudo('apt-get install -y %s' % package_names)
 
 
-    @_on_this_server
+    @on_this_server
     def dist_upgrade(self):
         """Perform a dist-upgrade and make sure the base packages are installed.
         """
@@ -215,7 +215,7 @@ class Server(object):
         self.add_roles(adders)
 
 
-    @_on_this_server
+    @on_this_server
     def add_roles(self, role_adders):
         """Adds a list of roles to the server.
         """
