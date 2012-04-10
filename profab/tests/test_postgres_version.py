@@ -6,6 +6,7 @@ from unittest2 import TestCase
 from profab.tests.mockboto.connection import MockConnection, regions
 from profab.tests.mockfabric.connections import start_connection
 
+
 class VersionPostgres(TestCase):
     """Test check postgres's version.
     """
@@ -26,10 +27,9 @@ class VersionPostgres(TestCase):
 
         exist.side_effect = side_effect 
         # Act
-        AddRole.check_version_postgres(postgres_path)
+        pg_path = AddRole.get_configuration_path(postgres_path)
         # Assert
-        sed.assert_called_once_with('/etc/postgresql/9.1/main/pg_hba.conf',
-            '127.0.0.1/32', '127.0.0.1/16', use_sudo=True)
+        self.assertEqual('/etc/postgresql/9.1', pg_path)
 
     @mock.patch('profab.role.postgres.exists')
     @mock.patch('profab.role.postgres.sed')
@@ -47,10 +47,9 @@ class VersionPostgres(TestCase):
 
         exist.side_effect = side_effect 
         # Act
-        AddRole.check_version_postgres(postgres_path)
+        pg_path = AddRole.get_configuration_path(postgres_path)
         # Assert
-        sed.assert_called_once_with('/etc/postgresql/8.4/main/pg_hba.conf',
-            '127.0.0.1/32', '127.0.0.1/16', use_sudo=True)
+        self.assertEqual('/etc/postgresql/8.4', pg_path)
 
     @mock.patch('profab.role.postgres.exists')
     @mock.patch('profab.role.postgres.sed')
@@ -68,5 +67,5 @@ class VersionPostgres(TestCase):
 
         exist.side_effect = side_effect 
         # Assert
-        self.assertRaises(Exception, AddRole.check_version_postgres, postgres_path)
+        self.assertRaises(Exception, AddRole.get_configuration_path, postgres_path)
 
