@@ -15,9 +15,9 @@ class AddRole(Role):
     def configure(self, server):
         """Configure Postgres once it is running.
         """
-        pguser = sudo('''psql -c "select * from pg_user '''
+        pguser = sudo('''psql -x -c "select * from pg_user '''
             '''where usename='ubuntu'"''', user='postgres')
-        if '0 rows' in pguser:
+        if 'No rows' in pguser:
             sudo('psql -c "create role ubuntu login superuser"',
                 user='postgres')
             sudo('psql -c "create database ubuntu with owner=ubuntu"',
