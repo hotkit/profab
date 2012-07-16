@@ -29,6 +29,7 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.postgres.exists', lambda f: True)
     @mock.patch('profab.role.postgres.run', start_connection)
     @mock.patch('profab.role.postgres.sed', lambda *a, **kw: None)
     @mock.patch('profab.role.postgres.sudo', start_connection)
@@ -227,6 +228,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
     @mock.patch('profab.ec2.regions', regions)
+    @mock.patch('profab.role.postgres.exists', lambda f: True)
     @mock.patch('profab.role.postgres.run', lambda s: start_connection() or 'No rows')
     @mock.patch('profab.role.postgres.sed', lambda *a, **kw: None)
     @mock.patch('profab.role.postgres.sudo', lambda s, user=None: start_connection() or '0 rows')
@@ -276,7 +278,6 @@ class ServerLifecycle(TestCase):
         server = Server.connect('test', 'ec2-host')
         with self.assertRaises(ImportError):
             server.add_role('not-a-role')
-
 
 class ServerMeta(TestCase):
     @mock.patch('os.mkdir', lambda p: None)

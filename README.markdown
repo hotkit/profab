@@ -8,12 +8,6 @@ To use the latest development version install:
 
     pip install git+git://github.com/Proteus-tech/profab.git@develop
 
-Note that in order to make connections to new machines and reboots reliable the latest version of Fabric is needed.
-
-    pip install git+git://github.com/fabric/fabric.git
-
-You will need to do this *before* installing Profab.
-
 
 # Configuring profab #
 
@@ -38,6 +32,8 @@ The first time you connect to an EC2 region to start a machine a new private/pub
 # Command line scripts #
 
 For all commands `client-name` is the same as the configuration folder used above, (acme-widgets)..
+
+Commands that take host names can also be given an EC2 reservation. These look like `r-adf3243234`.
 
 Command line arguments are given as names after the script. For roles they come in two types: either with or without a parameter. This is either as `role` or `--role parameter`. Roles are processed in the order specified.
 
