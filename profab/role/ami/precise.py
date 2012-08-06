@@ -6,8 +6,11 @@ import urllib2
 import re
 
 
-RAW_PATTERN = r"<td><p> (\w+-\w+-\d+) </p></td>\n  <td><p> (\d+).+</p></td>\n  <td><p> (\w+) </p></td>\n.+\n.+ec2-run-instances (\w+-\w+) --instance-type (\w\d+[.]\w+)"
-WEBSITE = "http://ubuntutym2.u-toyama.ac.jp/uec-images/releases/precise/release/"
+RAW_PATTERN = r"<td><p> (\w+-\w+-\d+) </p></td>\n  " \
+    "<td><p> (\d+).+</p></td>\n  <td><p> (\w+) </p></td>\n" \
+    ".+\n.+ec2-run-instances (\w+-\w+) --instance-type (\w\d+[.]\w+)"
+WEBSITE = "http://ubuntutym2.u-toyama.ac.jp" \
+    "/uec-images/releases/precise/release/"
 COMPILED_PATTERN = re.compile(RAW_PATTERN)
 
 
