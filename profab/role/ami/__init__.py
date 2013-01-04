@@ -7,17 +7,8 @@ from profab import _logger
 from profab.role import Role
 
 
-RAW_PATTERN = r"""(\w+-\w+-\d+).+\n""" \
-    r"""\s+<td><p>\s+(32|64)-\w+.+\n""" \
-    r"""\s+<td><p>\s+(\w+).+\n""" \
-    r""".+(\w\w\w-\w+)\s+</p></td>$"""
-WEBSITE = "http://ubuntutym2.u-toyama.ac.jp" \
-    "/uec-images/releases/precise/release/"
-COMPILED_PATTERN = re.compile(RAW_PATTERN, re.MULTILINE)
-
-
 class Configure(Role):
-    """Adds a Munin node to a server.
+    """Allows the AMI to be specified at the command line.
     """
     def ami(self, _region, _bits, _size):
         """Return the AMI that was passed in to the role.
@@ -35,6 +26,15 @@ class ChooseAMI(Role):
         # pylint: disable = E1101
         disk = 'ebs' if size == 't1.micro' else 'instance'
         return self.AMIS[str(bits)][disk].get(region, None)
+
+
+RAW_PATTERN = r"""(\w+-\w+-\d+).+\n""" \
+    r"""\s+<td><p>\s+(32|64)-\w+.+\n""" \
+    r"""\s+<td><p>\s+(\w+).+\n""" \
+    r""".+(\w\w\w-\w+)\s+</p></td>$"""
+WEBSITE = "http://ubuntutym2.u-toyama.ac.jp" \
+    "/uec-images/releases/precise/release/"
+COMPILED_PATTERN = re.compile(RAW_PATTERN, re.MULTILINE)
 
 
 def struct_amis_dict():
