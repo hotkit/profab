@@ -86,6 +86,15 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.ami._fetch_html', lambda u:
+        '''
+<tr>
+  <td><p> us-east-1 </p></td>
+  <td><p> 64-bit </p></td>
+  <td><p> ebs </p></td>
+  <td><p> <button type="button>Launch</button> ami-63be790a </p></td>
+</tr>
+        ''')
     @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
@@ -100,6 +109,15 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
+    @mock.patch('profab.role.ami._fetch_html', lambda u:
+        '''
+<tr>
+  <td><p> us-east-1 </p></td>
+  <td><p> 32-bit </p></td>
+  <td><p> ebs </p></td>
+  <td><p> <button type="button>Launch</button> ami-c7b202ae </p></td>
+</tr>
+        ''')
     @mock.patch('profab.server.append', start_connection)
     @mock.patch('profab.server.getaddrinfo', lambda h, p:
             [(0, 0, 0, '', ('10.56.32.4', p))])
@@ -109,33 +127,7 @@ class ServerLifecycle(TestCase):
     @mock.patch('time.sleep', lambda s: None)
     def test_start_lucid(self):
         server = Server.start('test', 'ami.lucid')
-        self.assertEqual(server.instance.image_id, 'ami-2cc83145')
-
-    @mock.patch('os.mkdir', lambda p: None)
-    @mock.patch('profab.connection.EC2Connection', MockConnection)
-    @mock.patch('profab.server.append', start_connection)
-    @mock.patch('profab.server.getaddrinfo', lambda h, p:
-            [(0, 0, 0, '', ('10.56.32.4', p))])
-    @mock.patch('profab.server.reboot', start_connection)
-    @mock.patch('profab.server.run', start_connection)
-    @mock.patch('profab.server.sudo', start_connection)
-    @mock.patch('time.sleep', lambda s: None)
-    def test_start_natty(self):
-        server = Server.start('test', 'ami.natty')
-        self.assertEqual(server.instance.image_id, 'ami-639b530a')
-
-    @mock.patch('os.mkdir', lambda p: None)
-    @mock.patch('profab.connection.EC2Connection', MockConnection)
-    @mock.patch('profab.server.append', start_connection)
-    @mock.patch('profab.server.getaddrinfo', lambda h, p:
-            [(0, 0, 0, '', ('10.56.32.4', p))])
-    @mock.patch('profab.server.reboot', start_connection)
-    @mock.patch('profab.server.run', start_connection)
-    @mock.patch('profab.server.sudo', start_connection)
-    @mock.patch('time.sleep', lambda s: None)
-    def test_start_oneiric(self):
-        server = Server.start('test', 'ami.oneiric')
-        self.assertEqual(server.instance.image_id, 'ami-0bcb0262')
+        self.assertEqual(server.instance.image_id, 'ami-c7b202ae')
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)

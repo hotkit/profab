@@ -36,16 +36,22 @@ WEBSITE = "http://uec-images.ubuntu.com/releases/%s/release/"
 COMPILED_PATTERN = re.compile(RAW_PATTERN, re.MULTILINE)
 
 
+def _fetch_html(url):
+    """Return the HTML for the given URL (so we can patch it)
+    """
+    response = urllib2.urlopen(url)
+    return response.read()
+
+
 def struct_amis_dict(release):
     """Download the AMI list HTML and parse it to find the AMI codes
     for the various versions of Ubuntu.
     """
     try:
-        response = urllib2.urlopen(WEBSITE % release)
+        html = _fetch_html(WEBSITE % release)
     except urllib2.HTTPError, error:
         _logger.error(error.msg)
         return None
-    html = response.read()
     ami_tuple_list = COMPILED_PATTERN.findall(html)
     if ami_tuple_list:
         tmp = {
