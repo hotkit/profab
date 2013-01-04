@@ -33,16 +33,16 @@ RAW_PATTERN = r"""(\w+-\w+-\d+).+\n""" \
     r"""\s+<td><p>\s+(\w+).+\n""" \
     r""".+(\w\w\w-\w+)\s+</p></td>$"""
 WEBSITE = "http://ubuntutym2.u-toyama.ac.jp" \
-    "/uec-images/releases/precise/release/"
+    "/uec-images/releases/%s/release/"
 COMPILED_PATTERN = re.compile(RAW_PATTERN, re.MULTILINE)
 
 
-def struct_amis_dict():
+def struct_amis_dict(release):
     """Download the AMI list HTML and parse it to find the AMI codes
     for the various versions of Ubuntu.
     """
     try:
-        response = urllib2.urlopen(WEBSITE)
+        response = urllib2.urlopen(WEBSITE % release)
     except urllib2.HTTPError, error:
         _logger.error(error.msg)
         return None

@@ -9,6 +9,6 @@ class AddRole(ChooseAMI):
     def ami(self, region, bits, size):
         # pylint: disable = E1101
         disk = 'ebs' if size == 't1.micro' else 'instance'
-        amis = struct_amis_dict()
+        amis = struct_amis_dict('precise')
         return amis[str(bits)][disk].get(region, None)
 
