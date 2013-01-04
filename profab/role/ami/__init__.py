@@ -32,8 +32,7 @@ RAW_PATTERN = r"""(\w+-\w+-\d+).+\n""" \
     r"""\s+<td><p>\s+(32|64)-\w+.+\n""" \
     r"""\s+<td><p>\s+(\w+).+\n""" \
     r""".+(\w\w\w-\w+)\s+</p></td>$"""
-WEBSITE = "http://ubuntutym2.u-toyama.ac.jp" \
-    "/uec-images/releases/%s/release/"
+WEBSITE = "http://uec-images.ubuntu.com/releases/%s/release/"
 COMPILED_PATTERN = re.compile(RAW_PATTERN, re.MULTILINE)
 
 
