@@ -1,14 +1,11 @@
 """Choose the latest AMI for Ubuntu Precise.
 """
-from profab.role.ami import ChooseAMI, struct_amis_dict
+from profab.role.ami.ubuntu import Configure
 
 
-class AddRole(ChooseAMI):
+class AddRole(Configure):
     """Data for Precise AMIs.
     """
-    def ami(self, region, bits, size):
-        # pylint: disable = E1101
-        disk = 'ebs' if size == 't1.micro' else 'instance'
-        amis = struct_amis_dict('precise')
-        return amis[str(bits)][disk].get(region, None)
+    def __init__(self):
+        super(AddRole, self).__init__('precise')
 

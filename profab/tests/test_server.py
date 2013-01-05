@@ -86,7 +86,7 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
-    @mock.patch('profab.role.ami._fetch_html', lambda u:
+    @mock.patch('profab.role.ami.ubuntu._fetch_html', lambda u:
         '''
 <tr>
   <td><p> us-east-1 </p></td>
@@ -109,7 +109,7 @@ class ServerLifecycle(TestCase):
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
-    @mock.patch('profab.role.ami._fetch_html', lambda u:
+    @mock.patch('profab.role.ami.ubuntu._fetch_html', lambda u:
         '''
 <tr>
   <td><p> us-east-1 </p></td>
