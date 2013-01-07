@@ -11,7 +11,7 @@ APACHE_CONFIG = """
 MUNIN_CONFIG = """includedir /etc/munin/munin-conf.d
 """
 
-MUNIN_NODE_CONFIG = """log_level 4
+MUNIN_NODE_CONFIG = r"""log_level 4
 log_file /var/log/munin/munin-node.log
 pid_file /var/run/munin/munin-node.pid
 
