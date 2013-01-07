@@ -61,13 +61,13 @@ If multiple roles set an AMI, instance size or region then the last one that doe
 
     pf-server-stop client-name hostname
 
-## pf-server-update ##
-
-    pf-server-update client-name hostname
-
 ## pf-server-terminate ##
 
     pf-server-terminate client-name hostname
+
+## pf-server-update ##
+
+    pf-server-update client-name hostname
 
 
 # Roles #
