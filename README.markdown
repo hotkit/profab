@@ -78,7 +78,7 @@ If multiple roles set an AMI, instance size or region then the last one that doe
 
 Allows the AMI that is to be launched to be controlled. The AMI must be available in the region requested.
 
-    ami.ubuntu release
+    --ami.ubuntu release
 
 Will choose the current AMI based on the named or numbered release. Only those releases listed at http://uec-images.ubuntu.com/releases/ are available, and only those that have actually been released (pre-release versions won't work -- you'll need to specify the full AMI yourself).
 
