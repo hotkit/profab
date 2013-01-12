@@ -106,7 +106,7 @@ Automatically determines the number of bits that are to be used for a new server
 
     --bits 32|64
 
-Set the number of bits. profab will determine the correct number of bits for all current instance sizes automatically. You will need to use `--bits 64` to run a micro instance using a 64 bit operating system as profab will default to 32 bits.
+Set the number of bits. profab will determine the correct number of bits for all current instance sizes automatically. You will need to use `--bits 64` to run smaller instance sizes using a 64 bit operating system as profab will default to 32 bits.
 
 ## eip ##
 
