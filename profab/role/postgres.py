@@ -18,7 +18,7 @@ class AddRole(Role):
         and user database.
         """
         pguser = \
-            run('''psql -x -c "select * from pg_user where username='%s'"'''
+            run('''psql -x -c "select * from pg_user where usename='%s'"'''
                 % username)
         if 'No rows' in pguser:
             run('createuser -l -S -D -I -R %s' % username)
