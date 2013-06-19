@@ -1,5 +1,5 @@
 #!/bin/bash
 CPWD=`dirname $BASH_SOURCE`
 
-export PATH=$PATH:$CPWD/../bin
-export PYTHONPATH=$PYTHONPATH:$CPWD/..
+export PATH=$CPWD/../bin:$PATH
+export PYTHONPATH=$CPWD/..:$PYTHONPATH

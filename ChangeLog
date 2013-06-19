@@ -1,3 +1,7 @@
+2013-01-04  Kirit Saelensminde  <kirit@felspar.com>
+ Fix the devenv script so that the profab paths are always first.
+ Handle the new format for the AMI web page so we can find the right ones.
+
 2012-05-01  Siraset  <siraset@proteus-tech.com>
  Stop psql's script from hanging.
 
