@@ -94,7 +94,7 @@ Instances are chosen from http://uec-images.ubuntu.com/releases/10.04/release/
 
 This is deprecated.
 
-Will choose an Ubuntu Lucid (10.04) AMI. This is the default AMI if no other one is chosen.
+Will choose an Ubuntu Precise (12.04) AMI. This is the default AMI if no other one is chosen.
 
 Instances are chosen from http://uec-images.ubuntu.com/releases/12.04/release/
 
