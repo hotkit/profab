@@ -78,7 +78,7 @@ If multiple roles set an AMI, instance size or region then the last one that doe
 
 Allows the AMI that is to be launched to be controlled. The AMI must be available in the region requested.
 
-    ami.ubuntu release
+    --ami.ubuntu release
 
 Will choose the current AMI based on the named or numbered release. Only those releases listed at http://uec-images.ubuntu.com/releases/ are available, and only those that have actually been released (pre-release versions won't work -- you'll need to specify the full AMI yourself).
 
@@ -94,7 +94,7 @@ Instances are chosen from http://uec-images.ubuntu.com/releases/10.04/release/
 
 This is deprecated.
 
-Will choose an Ubuntu Lucid (10.04) AMI. This is the default AMI if no other one is chosen.
+Will choose an Ubuntu Precise (12.04) AMI. This is the default AMI if no other one is chosen.
 
 Instances are chosen from http://uec-images.ubuntu.com/releases/12.04/release/
 
@@ -106,7 +106,7 @@ Automatically determines the number of bits that are to be used for a new server
 
     --bits 32|64
 
-Set the number of bits. profab will determine the correct number of bits for all current instance sizes automatically. You will need to use `--bits 64` to run a micro instance using a 64 bit operating system as profab will default to 32 bits.
+Set the number of bits. profab will determine the correct number of bits for all current instance sizes automatically. You will need to use `--bits 64` to run smaller instance sizes using a 64 bit operating system as profab will default to 32 bits.
 
 ## eip ##
 
