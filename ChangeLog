@@ -1,3 +1,6 @@
+2015-08-27  Sak Adisak  <adisak-gunner@proteus-tech.com>
+ Add method for create volume from snapshot
+
 2015-07-20  Nui Narongwet  <narongwet@proteus-tech.com>
  Download AMI list from up-to-date data source
 
