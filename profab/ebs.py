@@ -48,7 +48,7 @@ class Volume(object):
 
 
     @classmethod
-    def get_device(cls, volumes)
+    def get_device(cls, volumes):
         used = [v.device for v in volumes]
         devices = [d for d in cls.DEVICES if d not in used]
         _logger.info("Unused devices on this server are %s", devices)
@@ -56,7 +56,7 @@ class Volume(object):
 
 
     @classmethod
-    def attach_volume(cls, server, volume, device)
+    def attach_volume(cls, server, volume, device):
         #Wait for create volume
         while volume.volume.status == 'creating':
             _logger.info("Waiting 10s for volume to create...")
