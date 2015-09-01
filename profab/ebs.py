@@ -32,7 +32,7 @@ class Volume(object):
 
 
     @classmethod
-    def creat_from_snapshot(cls, server, snapshot):
+    def create_from_snapshot(cls, server, snapshot):
         """Create a new volume from snapshot.
         """
         _logger.info("Creating volume from snapshot id %s",
