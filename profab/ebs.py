@@ -24,7 +24,7 @@ class Volume(object):
         _logger.info("Creating volume size %dGB on %s",
             size, server.instance.placement)
         device = cls.get_volume(server.get_volumes())
-        _loger.info("Used device %s on this server", device)
+        _logger.info("Used device %s on this server", device)
         volume = cls(server, server.cnx.create_volume(
             size, server.instance.placement), device)
         cls.attach_volume(server.insatance.id, volume, device)
@@ -38,7 +38,7 @@ class Volume(object):
         _logger.info("Creating volume from snapshot id %s",
             snapshot.id)
         device = cls.get_device(server.get_volumes())
-        _loger.info("Used device %s on this server", device)
+        _logger.info("Used device %s on this server", device)
         volume = cls(server, snapshot.create_volume(
             server.instance.placement), device)
         _logger.info("Used volume %s size %dGB",
