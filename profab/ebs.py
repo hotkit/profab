@@ -15,7 +15,7 @@ class Volume(object):
         self.volume = ec2_volume
 
 
-    DEVICES = ['/dev/sd%s' % chr(97+c) for c in range(1, 26)] + \
+    DEVICES = ['/dev/xvd%s' % chr(97+c) for c in range(5, 26)] + \
         ['/dev/hd%s' % chr(97+c) for c in range(0, 26)]
     @classmethod
     def create(cls, server, size):
