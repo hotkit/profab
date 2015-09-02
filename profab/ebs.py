@@ -15,7 +15,7 @@ class Volume(object):
         self.volume = ec2_volume
 
 
-    DEVICES = ['/dev/sd%s' % chr(97+c) for c in range(1, 26)] + \
+    DEVICES = ['/dev/xvd%s' % chr(97+c) for c in range(5, 26)] + \
         ['/dev/hd%s' % chr(97+c) for c in range(0, 26)]
     @classmethod
     def create(cls, server, size):
@@ -24,7 +24,7 @@ class Volume(object):
         _logger.info("Creating volume size %dGB on %s",
             size, server.instance.placement)
         device = cls.get_volume(server.get_volumes())
-        _loger.info("Used device %s on this server", device)
+        _logger.info("Used device %s on this server", device)
         volume = cls(server, server.cnx.create_volume(
             size, server.instance.placement), device)
         cls.attach_volume(server.insatance.id, volume, device)
@@ -32,13 +32,13 @@ class Volume(object):
 
 
     @classmethod
-    def creat_from_snapshot(cls, server, snapshot):
+    def create_from_snapshot(cls, server, snapshot):
         """Create a new volume from snapshot.
         """
         _logger.info("Creating volume from snapshot id %s",
             snapshot.id)
         device = cls.get_device(server.get_volumes())
-        _loger.info("Used device %s on this server", device)
+        _logger.info("Used device %s on this server", device)
         volume = cls(server, snapshot.create_volume(
             server.instance.placement), device)
         _logger.info("Used volume %s size %dGB",
@@ -48,7 +48,7 @@ class Volume(object):
 
 
     @classmethod
-    def get_device(cls, volumes)
+    def get_device(cls, volumes):
         used = [v.device for v in volumes]
         devices = [d for d in cls.DEVICES if d not in used]
         _logger.info("Unused devices on this server are %s", devices)
@@ -56,7 +56,7 @@ class Volume(object):
 
 
     @classmethod
-    def attach_volume(cls, server, volume, device)
+    def attach_volume(cls, server, volume, device):
         #Wait for create volume
         while volume.volume.status == 'creating':
             _logger.info("Waiting 10s for volume to create...")
