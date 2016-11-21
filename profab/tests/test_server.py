@@ -90,8 +90,8 @@ class ServerLifecycle(TestCase):
         r'''
 { "aaData":
 [
-["us-east-1","lucid","10.04 LTS","amd64","ebs","20150427","<a href=\"https://console.aws.amazon.com/ec2/home?region=us-east-1#launchAmi=ami-1e6f6176\">ami-1e6f6176</a>","aki-919dcaf8"],
-["us-east-1","lucid","10.04 LTS","i386","ebs","20150427","<a href=\"https://console.aws.amazon.com/ec2/home?region=us-east-1#launchAmi=ami-1c6f6174\">ami-1c6f6174</a>","aki-8f9dcae6"],
+["us-east-1","precise","12.04 LTS","amd64","ebs","20161109","<a href=\"https://console.aws.amazon.com/ec2/home?region=us-east-1#launchAmi=ami-f8d4f9ef\">ami-f8d4f9ef</a>","aki-919dcaf8"],
+["us-east-1","precise","12.04 LTS","i386","ebs","20161109","<a href=\"https://console.aws.amazon.com/ec2/home?region=us-east-1#launchAmi=ami-bddaf7aa\">ami-bddaf7aa</a>","aki-8f9dcae6"],
 ]
 }
         ''')
@@ -103,30 +103,9 @@ class ServerLifecycle(TestCase):
     @mock.patch('profab.server.sudo', start_connection)
     @mock.patch('time.sleep', lambda s: None)
     def test_start_customise_bits(self):
-        server = Server.start('test', ('size', 't1.micro'), ('bits', '64'))
+        server = Server.start('test', ('size', 't1.micro'), ('bits', '64'), ('ami.precise', None))
         self.assertEqual(server.instance.instance_type, 't1.micro')
-        self.assertEqual(server.instance.image_id, 'ami-1e6f6176')
-
-    @mock.patch('os.mkdir', lambda p: None)
-    @mock.patch('profab.connection.EC2Connection', MockConnection)
-    @mock.patch('profab.role.ami.ubuntu._fetch_html', lambda u:
-        r'''
-{ "aaData":
-[
-["us-east-1","lucid","10.04 LTS","i386","ebs","20150427","<a href=\"https://console.aws.amazon.com/ec2/home?region=us-east-1#launchAmi=ami-1c6f6174\">ami-1c6f6174</a>","aki-8f9dcae6"],
-]
-}
-        ''')
-    @mock.patch('profab.server.append', start_connection)
-    @mock.patch('profab.server.getaddrinfo', lambda h, p:
-            [(0, 0, 0, '', ('10.56.32.4', p))])
-    @mock.patch('profab.server.reboot', start_connection)
-    @mock.patch('profab.server.run', start_connection)
-    @mock.patch('profab.server.sudo', start_connection)
-    @mock.patch('time.sleep', lambda s: None)
-    def test_start_lucid(self):
-        server = Server.start('test', 'ami.lucid')
-        self.assertEqual(server.instance.image_id, 'ami-1c6f6174')
+        self.assertEqual(server.instance.image_id, 'ami-f8d4f9ef')
 
     @mock.patch('os.mkdir', lambda p: None)
     @mock.patch('profab.connection.EC2Connection', MockConnection)
