@@ -1,3 +1,6 @@
+2016-11-21  Yothin Muangsommuk  <yothin@kmi.tl>
+ Fixed a problem lucid not in AMI list causing error when instance starting up
+
 2015-07-20  Nui Narongwet  <narongwet@proteus-tech.com>
  Download AMI list from up-to-date data source
 

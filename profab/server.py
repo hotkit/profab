@@ -61,7 +61,7 @@ class Server(object):
         config = Configuration(client)
         _logger.info("New server for %s on %s with roles %s",
             config.client, config.host, roles)
-        roles = [('ami.lucid', None), ('bits', None)] + list(roles)
+        roles = [('bits', None)] + list(roles)
         role_adders = cls.get_role_adders(*roles)
 
         # Work out the correct region to use and connect to it
