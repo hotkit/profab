@@ -1,3 +1,6 @@
+2017-03-14  paveena  <paveena_b@proteus-tech.com>
+ Remove lucid from the default roles.
+
 2015-08-27  Sak Adisak  <adisak-gunner@proteus-tech.com>
  Add method for create volume from snapshot
 
