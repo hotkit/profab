@@ -156,7 +156,8 @@ Unlike the normal EC2 default, profab has a default size of `t1.micro`.
 
 Sets the instance root volume to be launched to the requested  root volume.
 
-Ex. volume : 30, it mean set root volume to be 30GB
+Ex. volume : 30, it mean set root volume to be 30GB.
+
 EC2 has a default root volume of 10GB.
 
 ## smarthost ##
