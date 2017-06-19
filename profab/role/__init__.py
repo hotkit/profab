@@ -24,6 +24,11 @@ class Role(object):
         """
         pass
 
+    def volume(self):
+        """Called to determine the instance volume to be started.
+        """
+        pass
+
 
     def bits(self, size):
         """Returns the number of bits that the AMI operating system should
