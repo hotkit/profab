@@ -24,8 +24,8 @@ class Role(object):
         """
         pass
 
-    def volume(self):
-        """Called to determine the instance volume to be started.
+    def root_volume_size(self):
+        """Called to determine the instance root volume size to be started.
         """
         pass
 

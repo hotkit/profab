@@ -79,10 +79,10 @@ class Server(object):
             run_args['instance_type'] = role_adder.size() or \
                 run_args['instance_type']
 
-        # add root volume
+        # add root volume size
         for role_adder in role_adders:
-            if role_adder.volume():
-                run_args['block_device_map'] = role_adder.volume()
+            if role_adder.root_volume_size():
+                run_args['block_device_map'] = role_adder.root_volume_size()
 
         # Calculate how many bits the AMI should be using
         bits = None

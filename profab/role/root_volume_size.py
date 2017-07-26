@@ -5,9 +5,9 @@ from boto.ec2.blockdevicemapping import BlockDeviceMapping, BlockDeviceType
 
 
 class Configure(Role):
-    """Used to determine the volume that a machine is launched in.
+    """Used to determine the root volume size that a machine is launched in.
     """
-    def volume(self):
+    def root_volume_size(self):
         """Return the BlockDeviceMapping that was passed in to the role.
         """
 
