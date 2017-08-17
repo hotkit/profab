@@ -29,6 +29,10 @@ class Role(object):
         """
         pass
 
+    def subnet_id(self):
+        """Called to determine the subnet id of the new instance network.
+        """
+        pass
 
     def bits(self, size):
         """Returns the number of bits that the AMI operating system should
