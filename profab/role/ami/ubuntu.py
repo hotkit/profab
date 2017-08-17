@@ -16,7 +16,7 @@ class Configure(Role):
     def ami(self, region, bits, size):
         """Return the AMI that was passed in to the role.
         """
-        disk = 'ebs'
+        disk = 'hvm:ebs'
         amis = struct_amis_dict(self.parameter)
         return amis[str(bits)][disk].get(region, None)
 
