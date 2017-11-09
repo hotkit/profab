@@ -152,6 +152,14 @@ Sets the instance size to be launched to the requested size. Current valid sizes
 
 Unlike the normal EC2 default, profab has a default size of `t1.micro`.
 
+## root_volume_size ##
+
+Sets the instance root volume size to be launched to the requested root volume size.
+
+Ex. volume : 30, it mean set root volume size to be 30GB.
+
+EC2 has a default root volume size of 10GB.
+
 ## smarthost ##
 
     smarthost
@@ -203,4 +211,3 @@ Can do configuration of the machine within EC2 after the reservation has been ma
     configure(self, server)
 
 Can do any configuration that is required in order to get the role working.
-

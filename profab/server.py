@@ -1,6 +1,6 @@
 """This module handles the connection to the virtual machines running on EC2.
 """
-from socket import gaierror, getaddrinfo
+from socket import gaierror, getaddrinfo, gethostbyaddr
 import time
 
 from fabric.api import settings, sudo, reboot, run
@@ -20,7 +20,8 @@ def on_this_server(function):
         """Wrapped method
         """
         keyfile = get_private_key_filename(server.config, server.cnx)
-        with settings(host_string=server.eip or server.instance.dns_name,
+        dns_name = gethostbyaddr(server.instance.ip_address)
+        with settings(host_string=server.eip or dns_name[0],
                 user='ubuntu', key_filename=keyfile, connection_attempts=10):
             function(server, *args, **kwargs)
     return wrapper
@@ -78,6 +79,16 @@ class Server(object):
         for role_adder in role_adders:
             run_args['instance_type'] = role_adder.size() or \
                 run_args['instance_type']
+
+        # add root volume size
+        for role_adder in role_adders:
+            if role_adder.root_volume_size():
+                run_args['block_device_map'] = role_adder.root_volume_size()
+
+        # add subnet id
+        for role_adder in role_adders:
+            if role_adder.subnet_id():
+                run_args['subnet_id'] = role_adder.subnet_id()
 
         # Calculate how many bits the AMI should be using
         bits = None
@@ -282,4 +293,3 @@ class Server(object):
             else:
                 role_adders.append(module.AddRole())
         return role_adders
-
